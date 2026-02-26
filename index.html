@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OKAY · Telegram</title>
+    <title>OKAY · Звёзды</title>
     <style>
         * {
             margin: 0;
@@ -19,9 +19,9 @@
             justify-content: center;
             align-items: center;
             padding: 8px;
+            overflow-x: hidden;
         }
 
-        /* Главная карточка как в Telegram */
         .phone-frame {
             max-width: 420px;
             width: 100%;
@@ -31,7 +31,7 @@
             overflow: hidden;
             padding: 16px 14px 20px;
             border: 1px solid rgba(0, 0, 0, 0.02);
-            animation: frameAppear 0.6s cubic-bezier(0.2, 0.9, 0.3, 1);
+            animation: frameAppear 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
         }
 
         @keyframes frameAppear {
@@ -39,26 +39,144 @@
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        /* Статус бар как в Telegram iOS */
+        #animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Исправленная анимация звезд - добавлены начальные значения */
+        .star-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            font-size: 24px;
+            will-change: transform, opacity;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+            animation: starFly 0.8s cubic-bezier(0.2, 0.9, 0.4, 1) forwards;
+            --x-40: 0px;
+            --y-40: 0px;
+            --x-80: 0px;
+            --y-80: 0px;
+            --x-final: 0px;
+            --y-final: 0px;
+        }
+
+        @keyframes starFly {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+            40% {
+                opacity: 0.9;
+                transform: translate(var(--x-40), calc(var(--y-40) - 30px)) scale(1.4) rotate(15deg);
+            }
+            80% {
+                opacity: 0.5;
+                transform: translate(var(--x-80), var(--y-80)) scale(1.1) rotate(5deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--x-final), var(--y-final)) scale(0.5) rotate(0deg);
+            }
+        }
+
         .status-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 4px 6px 16px;
+            padding: 4px 6px 12px;
             color: #8e8e93;
             font-size: 15px;
             font-weight: 500;
-            animation: fadeSlide 0.5s ease-out;
+        }
+
+        .okay-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f2f2f7;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1c1c1e;
         }
 
         .time {
+            color: #8e8e93;
+            font-size: 14px;
             background: #f2f2f7;
             padding: 4px 12px;
             border-radius: 30px;
-            font-size: 14px;
         }
 
-        /* Шапка профиля с анимацией */
+        .top-balance {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8f8fa;
+            padding: 12px 16px;
+            border-radius: 28px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            animation: slideDown 0.5s ease-out forwards;
+            z-index: 2;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .balance-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1c1c1e;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .balance-amount {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 22px;
+            color: #1c1c1e;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+        }
+
+        .balance-amount span:last-child {
+            font-size: 20px;
+            margin-left: 2px;
+        }
+
+        .balance-highlight {
+            animation: balanceHighlight 0.5s ease-out forwards;
+        }
+
+        @keyframes balanceHighlight {
+            0%, 100% {
+                background: white;
+                transform: scale(1);
+            }
+            50% {
+                background: #1c1c1e;
+                color: white;
+                transform: scale(1.1);
+            }
+        }
+
         .profile-header {
             display: flex;
             align-items: center;
@@ -73,11 +191,6 @@
             cursor: pointer;
         }
 
-        .profile-header:hover {
-            background: #f0f0f5;
-            transform: scale(1.01);
-        }
-
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
@@ -86,23 +199,31 @@
         .avatar {
             width: 60px;
             height: 60px;
-            background: #e4e4ea;
             border-radius: 50%;
+            background: #e4e4ea;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .avatar-placeholder {
             font-size: 26px;
             font-weight: 500;
             color: #1c1c1e;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-            transition: transform 0.2s ease;
-            animation: avatarPop 0.6s ease-out 0.2s both;
-        }
-
-        @keyframes avatarPop {
-            0% { opacity: 0; transform: scale(0.8); }
-            50% { transform: scale(1.1); }
-            100% { opacity: 1; transform: scale(1); }
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
         }
 
         .profile-info {
@@ -135,99 +256,15 @@
             font-weight: 600;
             padding: 3px 8px;
             border-radius: 30px;
-            letter-spacing: -0.2px;
         }
 
-        /* Баланс с анимацией */
-        .stars-balance {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background: white;
-            padding: 5px 14px;
-            border-radius: 30px;
-            width: fit-content;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-            border: 1px solid rgba(0, 0, 0, 0.02);
-            transition: all 0.2s ease;
-            animation: balancePulse 2s infinite;
-        }
-
-        @keyframes balancePulse {
-            0%, 100% { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02); }
-            50% { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); }
-        }
-
-        .stars-count {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1c1c1e;
-            letter-spacing: -0.3px;
-            transition: all 0.3s ease;
-        }
-
-        .stars-count.update {
-            transform: scale(1.2);
-            color: #000;
-        }
-
-        /* Вкладки как в Telegram */
-        .tabs {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 20px;
-            background: #f2f2f7;
-            padding: 4px;
-            border-radius: 32px;
-            animation: slideUp 0.5s ease-out 0.15s both;
-        }
-
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 10px 4px;
-            border-radius: 28px;
-            font-weight: 600;
-            color: #8e8e93;
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
-            cursor: pointer;
-            border: none;
-            background: transparent;
-            font-size: 15px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tab::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: #1c1c1e;
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-        }
-
-        .tab.active {
-            background: #ffffff;
-            color: #1c1c1e;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-        }
-
-        .tab.active::after {
-            width: 30%;
-        }
-
-        /* Карточки контента */
         .content-card {
             background: #f8f8fa;
             border-radius: 28px;
             padding: 18px 14px;
             border: 1px solid rgba(0, 0, 0, 0.02);
-            animation: cardAppear 0.5s ease-out;
-            transition: all 0.3s ease;
+            animation: cardAppear 0.5s ease-out forwards;
+            min-height: 400px;
         }
 
         @keyframes cardAppear {
@@ -235,7 +272,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Квесты с анимацией */
         .quest-item {
             display: flex;
             align-items: center;
@@ -246,8 +282,7 @@
             margin-bottom: 8px;
             border: 1px solid rgba(0, 0, 0, 0.02);
             transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
-            animation: questSlide 0.5s ease-out;
-            animation-fill-mode: both;
+            animation: questSlide 0.5s ease-out forwards;
             cursor: pointer;
         }
 
@@ -256,6 +291,7 @@
         .quest-item:nth-child(4) { animation-delay: 0.15s; }
         .quest-item:nth-child(5) { animation-delay: 0.2s; }
         .quest-item:nth-child(6) { animation-delay: 0.25s; }
+        .quest-item:nth-child(7) { animation-delay: 0.3s; }
 
         @keyframes questSlide {
             from { opacity: 0; transform: translateX(-15px); }
@@ -272,10 +308,7 @@
             opacity: 0.5;
             background: #f2f2f7;
             transform: scale(0.99);
-        }
-
-        .quest-item.completed:hover {
-            transform: translateX(3px) scale(0.99);
+            pointer-events: none;
         }
 
         .quest-title {
@@ -294,7 +327,6 @@
             font-size: 13px;
         }
 
-        /* Кнопки с анимацией */
         .quest-btn {
             background: white;
             border: 1px solid rgba(0, 0, 0, 0.02);
@@ -304,28 +336,9 @@
             border-radius: 30px;
             font-size: 13px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            transition: all 0.3s ease;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .quest-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.05);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .quest-btn:hover::before {
-            width: 200px;
-            height: 200px;
+            z-index: 2;
         }
 
         .quest-btn:hover {
@@ -341,10 +354,8 @@
             background: #e8e8ed;
             color: #8e8e93;
             pointer-events: none;
-            border: none;
         }
 
-        /* Статистика профиля с анимацией */
         .stats-grid {
             display: flex;
             flex-wrap: wrap;
@@ -360,9 +371,7 @@
             border: 1px solid rgba(0, 0, 0, 0.02);
             text-align: center;
             transition: all 0.4s ease;
-            animation: statPop 0.5s ease-out;
-            animation-fill-mode: both;
-            cursor: pointer;
+            animation: statPop 0.5s ease-out forwards;
         }
 
         .stat-item:nth-child(1) { animation-delay: 0.1s; }
@@ -386,22 +395,20 @@
             font-weight: 700;
             color: #1c1c1e;
             line-height: 1.2;
-            transition: all 0.3s ease;
         }
 
-        .stat-value.update {
-            transform: scale(1.1);
-            color: #000;
+        .stat-label {
+            color: #8e8e93;
+            font-size: 13px;
+            margin-top: 4px;
         }
 
-        /* Прогресс бар с анимацией */
         .progress-bar {
             background: #e8e8ed;
             height: 14px;
             border-radius: 30px;
             margin: 12px 0 6px;
             overflow: hidden;
-            border: 1px solid rgba(0, 0, 0, 0.02);
         }
 
         .progress-fill {
@@ -409,30 +416,14 @@
             background: #1c1c1e;
             border-radius: 30px;
             transition: width 0.8s cubic-bezier(0.2, 0.9, 0.4, 1);
-            box-shadow: 0 0 12px rgba(28, 28, 30, 0.2);
-            animation: shimmer 2s infinite;
         }
 
-        @keyframes shimmer {
-            0% { opacity: 1; }
-            50% { opacity: 0.9; }
-            100% { opacity: 1; }
-        }
-
-        /* Мини-игра */
         .game-container {
             text-align: center;
             padding: 18px;
             background: white;
             border-radius: 28px;
             margin: 16px 0;
-            border: 1px solid rgba(0, 0, 0, 0.02);
-            animation: gameAppear 0.6s ease-out;
-        }
-
-        @keyframes gameAppear {
-            0% { opacity: 0; transform: scale(0.95) rotate(-1deg); }
-            100% { opacity: 1; transform: scale(1) rotate(0); }
         }
 
         .game-emoji {
@@ -440,7 +431,6 @@
             margin-bottom: 12px;
             filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.05));
             animation: gameFloat 3s ease-in-out infinite;
-            transition: all 0.3s ease;
         }
 
         @keyframes gameFloat {
@@ -449,7 +439,7 @@
         }
 
         .game-emoji.win {
-            animation: winBounce 0.8s ease;
+            animation: winBounce 0.8s ease forwards;
         }
 
         @keyframes winBounce {
@@ -458,7 +448,7 @@
         }
 
         .game-emoji.lose {
-            animation: loseShake 0.5s ease;
+            animation: loseShake 0.5s ease forwards;
         }
 
         @keyframes loseShake {
@@ -479,531 +469,1058 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(28, 28, 30, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .game-btn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            opacity: 0;
-            border-radius: 100%;
-            transform: scale(1, 1) translate(-50%);
-            transform-origin: 50% 50%;
-        }
-
-        .game-btn:focus:not(:active)::after {
-            animation: ripple 1s ease-out;
-        }
-
-        @keyframes ripple {
-            0% {
-                transform: scale(0, 0);
-                opacity: 0.5;
-            }
-            20% {
-                transform: scale(25, 25);
-                opacity: 0.3;
-            }
-            100% {
-                opacity: 0;
-                transform: scale(40, 40);
-            }
         }
 
         .game-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(28, 28, 30, 0.15);
         }
 
         .game-btn:active {
             transform: scale(0.98);
         }
 
-        .game-result {
+        .balance-container {
+            text-align: center;
+            padding: 24px;
+            background: white;
+            border-radius: 28px;
+            margin: 16px 0;
+        }
+
+        .balance-big {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin: 16px 0;
+        }
+
+        .balance-big span {
+            font-size: 40px;
+            margin-left: 8px;
+        }
+
+        .withdraw-btn {
+            background: #1c1c1e;
+            color: white;
+            border: none;
+            padding: 18px 32px;
+            border-radius: 40px;
             font-size: 18px;
             font-weight: 600;
-            color: #1c1c1e;
-            margin: 12px 0;
-            min-height: 40px;
+            width: 100%;
+            cursor: pointer;
             transition: all 0.3s ease;
-            animation: resultAppear 0.4s ease;
+            margin: 16px 0;
         }
 
-        @keyframes resultAppear {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .withdraw-btn:hover {
+            transform: scale(1.02);
+            background: #2c2c2e;
         }
 
-        /* Кнопки действий */
-        .action-row {
-            display: flex;
-            gap: 8px;
+        .withdraw-btn:disabled {
+            background: #e8e8ed;
+            color: #8e8e93;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .leaderboard-container {
             margin-top: 16px;
         }
 
-        .action-btn {
-            flex: 1;
-            background: #f8f8fa;
-            border: 1px solid rgba(0, 0, 0, 0.02);
-            padding: 12px 0;
-            border-radius: 30px;
-            color: #1c1c1e;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .action-btn:hover {
+        .leader-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             background: white;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.04);
+            padding: 12px;
+            border-radius: 24px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
         }
 
-        .action-btn:active {
-            transform: translateY(0);
+        .leader-item:hover {
+            transform: translateX(6px);
+            background: #fafafc;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
         }
 
-        /* Скрытие блоков */
-        .hidden {
-            display: none;
+        .leader-item.current-user {
+            background: #f0f0f5;
+            border: 1px solid #1c1c1e;
         }
 
-        /* Анимация для уведомлений */
-        @keyframes slideDown {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .leader-rank {
+            width: 32px;
+            height: 32px;
+            background: #f2f2f7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #1c1c1e;
+            flex-shrink: 0;
         }
 
-        /* Telegram стиль */
-        .tg-badge {
-            display: inline-flex;
+        .leader-rank.top-1 {
+            background: #ffd700;
+            color: #1c1c1e;
+        }
+
+        .leader-rank.top-2 {
+            background: #c0c0c0;
+            color: #1c1c1e;
+        }
+
+        .leader-rank.top-3 {
+            background: #cd7f32;
+            color: white;
+        }
+
+        .leader-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e4e4ea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .leader-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .leader-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .leader-name {
+            font-weight: 600;
+            color: #1c1c1e;
+            font-size: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .leader-username {
+            color: #8e8e93;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .leader-stars {
+            display: flex;
             align-items: center;
             gap: 4px;
-            background: #f2f2f7;
-            padding: 3px 8px;
+            font-weight: 700;
+            color: #1c1c1e;
+            flex-shrink: 0;
+        }
+
+        .leader-stars span {
+            font-size: 16px;
+        }
+
+        .leader-badge {
+            background: #1c1c1e;
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
             border-radius: 20px;
-            font-size: 11px;
-            color: #5c5c66;
+            margin-left: 8px;
+            display: inline-block;
         }
 
-        /* Анимация загрузки */
-        .pulse {
-            animation: pulse 2s infinite;
+        .stats-info {
+            display: flex;
+            justify-content: space-between;
+            color: #8e8e93;
+            font-size: 13px;
+            margin: 16px 0 8px;
+            padding: 12px;
+            background: white;
+            border-radius: 20px;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+        .help-container {
+            text-align: center;
+            padding: 24px 16px;
+        }
+
+        .help-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: helpPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes helpPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .help-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin-bottom: 12px;
+        }
+
+        .help-description {
+            color: #8e8e93;
+            font-size: 16px;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .manager-card {
+            background: white;
+            border-radius: 28px;
+            padding: 24px;
+            margin: 20px 0;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
+        }
+
+        .manager-avatar {
+            width: 80px;
+            height: 80px;
+            background: #1c1c1e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 40px;
+            color: white;
+        }
+
+        .manager-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin-bottom: 4px;
+        }
+
+        .manager-username {
+            color: #8e8e93;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        .contact-btn {
+            background: #1c1c1e;
+            color: white;
+            border: none;
+            padding: 18px 32px;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .contact-btn:hover {
+            transform: scale(1.02);
+            background: #2c2c2e;
+        }
+
+        .contact-btn:active {
+            transform: scale(0.98);
+        }
+
+        .faq-section {
+            margin-top: 32px;
+            text-align: left;
+        }
+
+        .faq-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1c1c1e;
+            margin-bottom: 16px;
+        }
+
+        .faq-item {
+            background: white;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .faq-question {
+            font-weight: 600;
+            color: #1c1c1e;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .faq-answer {
+            color: #8e8e93;
+            font-size: 14px;
+            line-height: 1.5;
+            padding-left: 28px;
+        }
+
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 16px;
+            padding: 6px 4px;
+            background: #f8f8fa;
+            border-radius: 40px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            animation: slideUp 0.5s ease-out 0.2s forwards;
+            gap: 2px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 6px 0;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            color: #8e8e93;
+            font-size: 10px;
+            font-weight: 500;
+            background: transparent;
+            border: none;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .nav-item.active {
+            color: #1c1c1e;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .nav-item span:first-child {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item:hover span:first-child {
+            transform: translateY(-2px);
+        }
+
+        .nav-item:active {
+            transform: scale(0.95);
+        }
+
+        .nav-item span:last-child {
+            font-size: 9px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            padding: 0 2px;
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
+    <div id="animation-container"></div>
+
     <div class="phone-frame" id="app">
-        <!-- Статус бар как в Telegram -->
         <div class="status-bar">
-            <div class="time">🕒 сейчас</div>
-            <div class="tg-badge">📱 Telegram</div>
+            <div class="okay-badge">
+                <span>⚡️</span>
+                <span>OKAY</span>
+            </div>
+            <div class="time" id="currentTime">15:30</div>
         </div>
 
-        <!-- Шапка профиля -->
+        <div class="top-balance">
+            <div class="balance-label">
+                <span>💰</span>
+                <span>Мой баланс</span>
+            </div>
+            <div class="balance-amount" id="topBalance">
+                <span id="starBalance">0</span>
+                <span>⭐️</span>
+            </div>
+        </div>
+
         <div class="profile-header" id="profileHeader">
-            <div class="avatar" id="avatar">👤</div>
+            <div class="avatar" id="avatar">
+                <div class="avatar-placeholder" id="avatarPlaceholder">👤</div>
+                <img id="avatarImage" src="" alt="User avatar">
+            </div>
             <div class="profile-info">
                 <div class="name-row">
                     <span class="profile-name" id="userName">Загрузка...</span>
                     <span class="badge">OKAY</span>
                 </div>
                 <div class="username" id="userUsername">@loading</div>
-                <div class="stars-balance" id="starsBalance">
-                    <span class="stars-count" id="starBalance">0</span>
-                </div>
             </div>
         </div>
 
-        <!-- Вкладки -->
-        <div class="tabs">
-            <button class="tab active" id="tabQuestsBtn">📋 Задания</button>
-            <button class="tab" id="tabProfileBtn">👤 Профиль</button>
-            <button class="tab" id="tabGameBtn">🎮 Игра</button>
-        </div>
+        <div id="contentArea"></div>
 
-        <!-- ===== ЗАДАНИЯ ===== -->
-        <div id="questsSection">
-            <div class="content-card">
-                <h3 style="color: #1c1c1e; margin-bottom: 14px; font-weight: 600; font-size: 17px;">📋 Ежедневные задания</h3>
-
-                <!-- Квест 1 -->
-                <div class="quest-item" id="quest1">
-                    <div class="quest-info">
-                        <div class="quest-title">👥 Пригласить друга</div>
-                        <div class="quest-reward">➕150</div>
-                    </div>
-                    <button class="quest-btn" id="quest1Btn">Взять</button>
-                </div>
-
-                <!-- Квест 2 -->
-                <div class="quest-item" id="quest2">
-                    <div class="quest-info">
-                        <div class="quest-title">📺 Подписаться</div>
-                        <div class="quest-reward">➕80</div>
-                    </div>
-                    <button class="quest-btn" id="quest2Btn">Взять</button>
-                </div>
-
-                <!-- Квест 3 -->
-                <div class="quest-item" id="quest3">
-                    <div class="quest-info">
-                        <div class="quest-title">🔄 Сделать репост</div>
-                        <div class="quest-reward">➕200</div>
-                    </div>
-                    <button class="quest-btn" id="quest3Btn">Взять</button>
-                </div>
-
-                <!-- Квест 4 -->
-                <div class="quest-item" id="quest4">
-                    <div class="quest-info">
-                        <div class="quest-title">📱 Истории</div>
-                        <div class="quest-reward">➕120</div>
-                    </div>
-                    <button class="quest-btn" id="quest4Btn">Взять</button>
-                </div>
-
-                <!-- Квест 5 -->
-                <div class="quest-item" id="quest5">
-                    <div class="quest-info">
-                        <div class="quest-title">⭐️ Вход</div>
-                        <div class="quest-reward">➕50</div>
-                    </div>
-                    <button class="quest-btn" id="quest5Btn">Взять</button>
-                </div>
-
-                <!-- Квест 6 -->
-                <div class="quest-item" id="quest6">
-                    <div class="quest-info">
-                        <div class="quest-title">💬 5 комментариев</div>
-                        <div class="quest-reward">➕180</div>
-                    </div>
-                    <button class="quest-btn" id="quest6Btn">Взять</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== ПРОФИЛЬ ===== -->
-        <div id="profileSection" class="hidden">
-            <div class="content-card">
-                <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px;">
-                    <div class="avatar" style="width: 65px; height: 65px; font-size: 30px;" id="profileAvatar">👤</div>
-                    <div>
-                        <div style="font-size: 18px; font-weight: 600; color: #1c1c1e;" id="profileName">OKAY User</div>
-                        <div style="color: #8e8e93; font-size: 13px;" id="profileUsername">@username</div>
-                        <div style="color: #a0a0a8; font-size: 12px; margin-top: 4px;" id="joinDate">✨ с сегодня</div>
-                    </div>
-                </div>
-
-                <!-- Статистика -->
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-value" id="profileStars">0</div>
-                        <div class="stat-label">Баланс</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="completedQuestsCount">0</div>
-                        <div class="stat-label">Заданий</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="gameWinsCount">0</div>
-                        <div class="stat-label">Побед</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="level">1</div>
-                        <div class="stat-label">Уровень</div>
-                    </div>
-                </div>
-
-                <!-- Прогресс -->
-                <div style="margin-top: 14px;">
-                    <div style="display: flex; justify-content: space-between; color: #8e8e93; font-size: 13px;">
-                        <span>🔥 До следующего уровня</span>
-                        <span id="progressText">0 / 1000</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
-                    </div>
-                </div>
-
-                <!-- Достижения -->
-                <div class="action-row">
-                    <button class="action-btn" id="achievementsBtn">🏆 Достижения</button>
-                    <button class="action-btn" id="statsBtn">📈 Статистика</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== ИГРА ===== -->
-        <div id="gameSection" class="hidden">
-            <div class="content-card">
-                <h3 style="color: #1c1c1e; margin-bottom: 14px; font-weight: 600;">🎮 OKAY Game</h3>
-
-                <div class="game-container">
-                    <div class="game-emoji" id="gameEmoji">🎲</div>
-                    <div class="game-result" id="gameResult">Нажми, чтобы сыграть</div>
-                    <button class="game-btn" id="playGameBtn">
-                        🎲 Бросить · 50
-                    </button>
-
-                    <div style="display: flex; justify-content: center; gap: 16px; margin-top: 12px; color: #8e8e93; font-size: 13px;">
-                        <span>🏆 100-200</span>
-                        <span>⚡️ 50%</span>
-                    </div>
-                </div>
-
-                <div style="margin-top: 14px; padding: 14px; background: white; border-radius: 24px;">
-                    <div style="display: flex; justify-content: space-between; color: #5c5c66; font-size: 13px;">
-                        <span>💰 Рекорд:</span>
-                        <span id="maxWin">0</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; color: #5c5c66; margin-top: 6px; font-size: 13px;">
-                        <span>🎮 Всего игр:</span>
-                        <span id="gamesPlayed">0</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Нижние кнопки -->
-        <div style="display: flex; justify-content: space-around; margin-top: 14px; gap: 8px;">
-            <button class="action-btn" style="flex: 1;" id="dailyBonusBtn">🎁 Бонус дня</button>
-            <button class="action-btn" style="flex: 1;" id="leaderboardBtn">📊 Топ</button>
+        <div class="bottom-nav">
+            <button class="nav-item active" id="navQuests" type="button">
+                <span>📋</span>
+                <span>Задания</span>
+            </button>
+            <button class="nav-item" id="navGame" type="button">
+                <span>🎮</span>
+                <span>Игра</span>
+            </button>
+            <button class="nav-item" id="navProfile" type="button">
+                <span>👤</span>
+                <span>Профиль</span>
+            </button>
+            <button class="nav-item" id="navLeaderboard" type="button">
+                <span>🏆</span>
+                <span>Лидеры</span>
+            </button>
+            <button class="nav-item" id="navBalance" type="button">
+                <span>💰</span>
+                <span>Баланс</span>
+            </button>
+            <button class="nav-item" id="navHelp" type="button">
+                <span>❓</span>
+                <span>Помощь</span>
+            </button>
         </div>
     </div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         (function() {
+            'use strict';
+
             // Telegram WebApp
-            let tg = window.Telegram?.WebApp;
-            let user = null;
+            const tg = window.Telegram?.WebApp;
+            const user = tg?.initDataUnsafe?.user || null;
 
             if (tg) {
                 tg.expand();
                 tg.ready();
-                user = tg.initDataUnsafe?.user;
                 tg.backgroundColor = '#ffffff';
                 tg.headerColor = '#ffffff';
             }
 
-            // localStorage
-            const STORAGE_KEY = 'okay_bot_v3';
+            // База данных
+            const DB_KEY = 'okay_users_database';
+            const CURRENT_USER_KEY = 'okay_current_user';
+
+            let database = {
+                users: {},
+                totalUsers: 0,
+                totalStars: 0,
+                lastUpdate: new Date().toISOString()
+            };
+
+            try {
+                const savedDB = localStorage.getItem(DB_KEY);
+                if (savedDB) {
+                    database = JSON.parse(savedDB);
+                }
+            } catch (e) {
+                console.log('Database load error, using default');
+            }
 
             const defaultState = {
                 stars: 500,
                 completed: {
                     quest1: false, quest2: false, quest3: false,
-                    quest4: false, quest5: false, quest6: false
+                    quest4: false, quest5: false, quest6: false,
+                    quest7: false
                 },
                 gameStats: {
                     wins: 0,
                     gamesPlayed: 0,
                     maxWin: 0
                 },
-                joinDate: new Date().toLocaleDateString('ru-RU')
+                joinDate: new Date().toLocaleDateString('ru-RU'),
+                withdrawals: []
             };
 
-            let savedState = localStorage.getItem(STORAGE_KEY);
-            let state = savedState ? JSON.parse(savedState) : defaultState;
+            let state = { ...defaultState };
+
+            try {
+                const savedState = localStorage.getItem(CURRENT_USER_KEY);
+                if (savedState) {
+                    const parsed = JSON.parse(savedState);
+                    state = { ...defaultState, ...parsed };
+                }
+            } catch (e) {
+                console.log('State load error, using default');
+            }
 
             // Элементы
             const elements = {
+                contentArea: document.getElementById('contentArea'),
                 starBalance: document.getElementById('starBalance'),
-                profileStars: document.getElementById('profileStars'),
-                completedQuests: document.getElementById('completedQuestsCount'),
-                gameWins: document.getElementById('gameWinsCount'),
-                gamesPlayed: document.getElementById('gamesPlayed'),
-                maxWin: document.getElementById('maxWin'),
-                level: document.getElementById('level'),
-                progressFill: document.getElementById('progressFill'),
-                progressText: document.getElementById('progressText'),
+                topBalance: document.getElementById('topBalance'),
+                balanceAmount: document.querySelector('.balance-amount'),
+                avatar: document.getElementById('avatar'),
+                avatarPlaceholder: document.getElementById('avatarPlaceholder'),
+                avatarImage: document.getElementById('avatarImage'),
                 userName: document.getElementById('userName'),
                 userUsername: document.getElementById('userUsername'),
-                profileName: document.getElementById('profileName'),
-                profileUsername: document.getElementById('profileUsername'),
-                joinDate: document.getElementById('joinDate'),
-                avatar: document.getElementById('avatar'),
-                profileAvatar: document.getElementById('profileAvatar'),
-                gameResult: document.getElementById('gameResult'),
-                gameEmoji: document.getElementById('gameEmoji'),
-                starsBalance: document.getElementById('starsBalance')
+                animationContainer: document.getElementById('animation-container'),
+                currentTime: document.getElementById('currentTime')
+            };
+
+            // Навигация
+            const navItems = {
+                quests: document.getElementById('navQuests'),
+                game: document.getElementById('navGame'),
+                profile: document.getElementById('navProfile'),
+                leaderboard: document.getElementById('navLeaderboard'),
+                balance: document.getElementById('navBalance'),
+                help: document.getElementById('navHelp')
             };
 
             // Квесты
             const quests = [
-                { id: 'quest1', btn: 'quest1Btn', reward: 150 },
-                { id: 'quest2', btn: 'quest2Btn', reward: 80 },
-                { id: 'quest3', btn: 'quest3Btn', reward: 200 },
-                { id: 'quest4', btn: 'quest4Btn', reward: 120 },
-                { id: 'quest5', btn: 'quest5Btn', reward: 50 },
-                { id: 'quest6', btn: 'quest6Btn', reward: 180 }
+                { id: 'quest1', title: '👥 Пригласить друга', reward: 150 },
+                { id: 'quest2', title: '📺 Подписаться на OKAY', reward: 200 },
+                { id: 'quest3', title: '🔄 Сделать репост', reward: 200 },
+                { id: 'quest4', title: '📱 Опубликовать истории', reward: 120 },
+                { id: 'quest5', title: '⭐️ Ежедневный вход', reward: 50 },
+                { id: 'quest6', title: '💬 5 комментариев', reward: 180 },
+                { id: 'quest7', title: '🎮 Сыграть в игру', reward: 100 }
             ];
 
-            // Вкладки
-            const sections = {
-                quests: document.getElementById('questsSection'),
-                profile: document.getElementById('profileSection'),
-                game: document.getElementById('gameSection')
-            };
+            // Обновление времени
+            function updateTime() {
+                if (!elements.currentTime) return;
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                elements.currentTime.textContent = `${hours}:${minutes}`;
+            }
+            updateTime();
+            setInterval(updateTime, 1000);
 
-            const tabs = {
-                quests: document.getElementById('tabQuestsBtn'),
-                profile: document.getElementById('tabProfileBtn'),
-                game: document.getElementById('tabGameBtn')
-            };
+            // Сохранение в БД
+            function updateUserInDatabase() {
+                if (!user) return;
 
-            // Функции с анимациями
-            function saveState() {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                try {
+                    database.users[user.id] = {
+                        id: user.id,
+                        name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'OKAY User',
+                        username: user.username || `user_${user.id}`,
+                        avatar: user.photo_url || null,
+                        stars: state.stars,
+                        joined: state.joinDate,
+                        lastSeen: new Date().toLocaleDateString('ru-RU'),
+                        questsCompleted: Object.values(state.completed).filter(v => v).length,
+                        gameWins: state.gameStats.wins
+                    };
+
+                    database.totalUsers = Object.keys(database.users).length;
+                    database.totalStars = Object.values(database.users).reduce((sum, u) => sum + (u.stars || 0), 0);
+                    database.lastUpdate = new Date().toISOString();
+
+                    localStorage.setItem(DB_KEY, JSON.stringify(database));
+                } catch (e) {
+                    console.log('Database update error');
+                }
             }
 
-            function animateElement(element, className) {
-                if (!element) return;
-                element.classList.add(className);
-                setTimeout(() => element.classList.remove(className), 300);
+            function saveState() {
+                try {
+                    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(state));
+                    updateUserInDatabase();
+                } catch (e) {
+                    console.log('State save error');
+                }
+            }
+
+            // Топ пользователей
+            function getLeaderboard(limit = 20) {
+                const users = Object.values(database.users);
+                return users
+                    .sort((a, b) => (b.stars || 0) - (a.stars || 0))
+                    .slice(0, limit)
+                    .map((u, index) => ({ ...u, rank: index + 1 }));
+            }
+
+            function getUserRank() {
+                if (!user) return null;
+
+                const users = Object.values(database.users);
+                const sorted = users.sort((a, b) => (b.stars || 0) - (a.stars || 0));
+                const index = sorted.findIndex(u => u.id === user.id);
+
+                if (index === -1) return null;
+
+                return {
+                    rank: index + 1,
+                    total: users.length,
+                    stars: sorted[index].stars || 0
+                };
+            }
+
+            // Анимация звезд
+            function animateStars(amount, sourceElement) {
+                if (!sourceElement || !elements.animationContainer || !elements.topBalance) return;
+
+                try {
+                    const sourceRect = sourceElement.getBoundingClientRect();
+                    const sourceX = sourceRect.left + sourceRect.width / 2;
+                    const sourceY = sourceRect.top + sourceRect.height / 2;
+
+                    const targetRect = elements.topBalance.getBoundingClientRect();
+                    const targetX = targetRect.left + targetRect.width / 2;
+                    const targetY = targetRect.top + targetRect.height / 2;
+
+                    const deltaX = targetX - sourceX;
+                    const deltaY = targetY - sourceY;
+
+                    const starCount = Math.min(Math.floor(Math.abs(amount) / 8), 12);
+
+                    for (let i = 0; i < starCount; i++) {
+                        setTimeout(() => {
+                            const star = document.createElement('div');
+                            star.className = 'star-particle';
+                            star.innerHTML = '⭐️';
+                            star.style.left = (sourceX + (Math.random() - 0.5) * 50) + 'px';
+                            star.style.top = (sourceY + (Math.random() - 0.5) * 50) + 'px';
+
+                            const x40 = deltaX * 0.4 + (Math.random() - 0.5) * 30;
+                            const y40 = deltaY * 0.4 + (Math.random() - 0.5) * 30 - 40;
+                            const x80 = deltaX * 0.8 + (Math.random() - 0.5) * 20;
+                            const y80 = deltaY * 0.8 + (Math.random() - 0.5) * 20 - 10;
+
+                            star.style.setProperty('--x-40', x40 + 'px');
+                            star.style.setProperty('--y-40', y40 + 'px');
+                            star.style.setProperty('--x-80', x80 + 'px');
+                            star.style.setProperty('--y-80', y80 + 'px');
+                            star.style.setProperty('--x-final', deltaX + 'px');
+                            star.style.setProperty('--y-final', deltaY + 'px');
+
+                            elements.animationContainer.appendChild(star);
+
+                            setTimeout(() => {
+                                if (star.parentNode) star.remove();
+                            }, 800);
+                        }, i * 60);
+                    }
+
+                    if (elements.balanceAmount) {
+                        elements.balanceAmount.classList.add('balance-highlight');
+                        setTimeout(() => {
+                            elements.balanceAmount?.classList.remove('balance-highlight');
+                        }, 500);
+                    }
+                } catch (e) {
+                    console.log('Animation error');
+                }
+            }
+
+            // Обновление UI
+            function refreshUI() {
+                if (elements.starBalance) {
+                    elements.starBalance.textContent = state.stars;
+                }
             }
 
             function updateUserInfo() {
+                if (!elements.userName || !elements.userUsername || !elements.avatarPlaceholder) return;
+
                 if (user) {
                     const firstName = user.first_name || 'OKAY';
                     const lastName = user.last_name || '';
                     const fullName = `${firstName} ${lastName}`.trim();
                     const username = user.username ? `@${user.username}` : '@user';
 
-                    elements.userName.innerText = fullName;
-                    elements.userUsername.innerText = username;
-                    elements.profileName.innerText = fullName;
-                    elements.profileUsername.innerText = username;
+                    elements.userName.textContent = fullName;
+                    elements.userUsername.textContent = username;
 
-                    const initial = firstName.charAt(0).toUpperCase();
-                    elements.avatar.innerText = initial;
-                    elements.profileAvatar.innerText = initial;
+                    if (user.photo_url && elements.avatarImage) {
+                        elements.avatarImage.src = user.photo_url;
+                        elements.avatarImage.style.display = 'block';
+                        if (elements.avatarPlaceholder) {
+                            elements.avatarPlaceholder.style.display = 'none';
+                        }
+                    } else {
+                        elements.avatarPlaceholder.textContent = firstName.charAt(0).toUpperCase();
+                        elements.avatarPlaceholder.style.display = 'flex';
+                        if (elements.avatarImage) {
+                            elements.avatarImage.style.display = 'none';
+                        }
+                    }
                 } else {
-                    elements.userName.innerText = 'OKAY User';
-                    elements.userUsername.innerText = '@okay';
-                    elements.profileName.innerText = 'OKAY User';
-                    elements.profileUsername.innerText = '@okay';
+                    elements.userName.textContent = 'OKAY User';
+                    elements.userUsername.textContent = '@okay';
+                    elements.avatarPlaceholder.textContent = '👤';
                 }
-
-                elements.joinDate.innerText = `✨ с ${state.joinDate}`;
             }
 
-            function updateLevel() {
-                const stars = state.stars;
-                const level = Math.floor(stars / 1000) + 1;
-                const nextLevelStars = level * 1000;
-                const prevLevelStars = (level - 1) * 1000;
-                const progress = ((stars - prevLevelStars) / (nextLevelStars - prevLevelStars)) * 100;
-
-                elements.level.innerText = level;
-                elements.progressFill.style.width = `${Math.min(progress, 100)}%`;
-                elements.progressText.innerText = `${stars - prevLevelStars} / 1000`;
-            }
-
-            function refreshUI() {
-                // Анимируем баланс при изменении
-                if (elements.starBalance.innerText != state.stars) {
-                    animateElement(elements.starBalance, 'update');
-                    animateElement(elements.profileStars, 'update');
-                }
-
-                elements.starBalance.innerText = state.stars;
-                elements.profileStars.innerText = state.stars;
+            // Рендер страниц
+            function renderQuests() {
+                if (!elements.contentArea) return;
 
                 const completedCount = Object.values(state.completed).filter(v => v).length;
-                elements.completedQuests.innerText = completedCount;
 
-                quests.forEach(quest => {
-                    const btn = document.getElementById(quest.btn);
-                    const card = document.getElementById(quest.id);
-                    const isCompleted = state.completed[quest.id];
+                let htmlString = '<div class="content-card"><h3 style="color: #1c1c1e; margin-bottom: 14px; font-weight: 600; font-size: 17px;">📋 Ежедневные задания</h3>';
 
-                    if (isCompleted) {
-                        btn.innerText = '✅ Готово';
-                        btn.classList.add('completed');
-                        card.classList.add('completed');
-                    } else {
-                        btn.innerText = 'Взять';
-                        btn.classList.remove('completed');
-                        card.classList.remove('completed');
-                    }
+                quests.forEach((quest, index) => {
+                    const questId = `quest${index + 1}`;
+                    const isCompleted = state.completed[questId] || false;
+
+                    htmlString += `
+                        <div class="quest-item ${isCompleted ? 'completed' : ''}" id="${questId}">
+                            <div class="quest-info">
+                                <div class="quest-title">${quest.title}</div>
+                                <div class="quest-reward">⭐️ +${quest.reward}</div>
+                            </div>
+                            <button class="quest-btn ${isCompleted ? 'completed' : ''}" type="button">
+                                ${isCompleted ? '✅ Готово' : 'Взять'}
+                            </button>
+                        </div>
+                    `;
                 });
 
-                elements.gameWins.innerText = state.gameStats.wins;
-                elements.gamesPlayed.innerText = state.gameStats.gamesPlayed;
-                elements.maxWin.innerText = state.gameStats.maxWin;
+                htmlString += `<div style="margin-top: 16px; padding: 12px; background: white; border-radius: 20px; text-align: center; color: #8e8e93; font-size: 14px;">✅ Выполнено: ${completedCount} / ${quests.length}</div></div>`;
 
-                updateLevel();
-                saveState();
+                elements.contentArea.innerHTML = htmlString;
+
+                // Добавляем обработчики
+                quests.forEach((quest, index) => {
+                    const questId = `quest${index + 1}`;
+                    const btn = document.querySelector(`#${questId} .quest-btn`);
+                    if (btn && !state.completed[questId]) {
+                        btn.onclick = () => completeQuest(questId, quest.reward, btn);
+                    }
+                });
             }
 
-            function completeQuest(questId, reward) {
+            function renderGame() {
+                if (!elements.contentArea) return;
+
+                const htmlString = `
+                    <div class="content-card">
+                        <h3 style="color: #1c1c1e; margin-bottom: 14px; font-weight: 600;">🎮 OKAY Game</h3>
+                        <div class="game-container">
+                            <div class="game-emoji" id="gameEmoji">🎲</div>
+                            <div class="game-result" id="gameResult">Нажми, чтобы сыграть</div>
+                            <button class="game-btn" id="playGameBtn" type="button">🎲 Бросить · 50 ⭐️</button>
+                            <div style="display: flex; justify-content: center; gap: 16px; margin-top: 12px; color: #8e8e93; font-size: 13px;">
+                                <span>🏆 100-200 ⭐️</span>
+                                <span>⚡️ 50%</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 14px; padding: 14px; background: white; border-radius: 24px;">
+                            <div style="display: flex; justify-content: space-between; color: #5c5c66; font-size: 13px;">
+                                <span>💰 Рекорд:</span>
+                                <span id="maxWin">${state.gameStats.maxWin} ⭐️</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; color: #5c5c66; margin-top: 6px; font-size: 13px;">
+                                <span>🎮 Всего игр:</span>
+                                <span id="gamesPlayed">${state.gameStats.gamesPlayed}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; color: #5c5c66; margin-top: 6px; font-size: 13px;">
+                                <span>🏆 Побед:</span>
+                                <span id="gameWins">${state.gameStats.wins}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                elements.contentArea.innerHTML = htmlString;
+
+                const playBtn = document.getElementById('playGameBtn');
+                if (playBtn) {
+                    playBtn.onclick = playGame;
+                }
+            }
+
+            function renderProfile() {
+                if (!elements.contentArea) return;
+
+                const completedCount = Object.values(state.completed).filter(v => v).length;
+                const level = Math.floor(state.stars / 1000) + 1;
+                const progress = ((state.stars % 1000) / 1000) * 100;
+                const userRank = getUserRank();
+
+                let htmlString = `
+                    <div class="content-card">
+                        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px;">
+                            <div class="avatar" style="width: 65px; height: 65px;">
+                                ${user?.photo_url ?
+                                    `<img src="${user.photo_url}" alt="User avatar" style="width:100%; height:100%; object-fit:cover;">` :
+                                    `<div class="avatar-placeholder" style="font-size:30px;">${user?.first_name?.charAt(0) || '👤'}</div>`
+                                }
+                            </div>
+                            <div>
+                                <div style="font-size: 18px; font-weight: 600; color: #1c1c1e;">${user?.first_name || 'OKAY'} ${user?.last_name || ''}</div>
+                                <div style="color: #8e8e93; font-size: 13px;">${user?.username ? '@' + user.username : '@user'}</div>
+                                <div style="color: #a0a0a8; font-size: 12px; margin-top: 4px;">⭐️ с ${state.joinDate}</div>
+                            </div>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-item"><div class="stat-value">${state.stars}</div><div class="stat-label">Баланс</div></div>
+                            <div class="stat-item"><div class="stat-value">${completedCount}</div><div class="stat-label">Заданий</div></div>
+                            <div class="stat-item"><div class="stat-value">${state.gameStats.wins}</div><div class="stat-label">Побед</div></div>
+                            <div class="stat-item"><div class="stat-value">${level}</div><div class="stat-label">Уровень</div></div>
+                        </div>
+
+                        <div style="margin-top: 14px;">
+                            <div style="display: flex; justify-content: space-between; color: #8e8e93; font-size: 13px;">
+                                <span>🔥 До следующего уровня</span>
+                                <span>${state.stars % 1000} / 1000 ⭐️</span>
+                            </div>
+                            <div class="progress-bar"><div class="progress-fill" style="width: ${progress}%;"></div></div>
+                        </div>
+                `;
+
+                if (userRank) {
+                    htmlString += `<div style="margin-top: 16px; padding: 12px; background: white; border-radius: 20px; display: flex; justify-content: space-between;">
+                        <span style="color: #8e8e93;">🏆 Место в топе</span>
+                        <span style="font-weight: 700;">#${userRank.rank} из ${userRank.total}</span>
+                    </div>`;
+                }
+
+                htmlString += `<div style="display: flex; gap: 8px; margin-top: 16px;">
+                    <button class="quest-btn" style="flex:1;" type="button">🏆 Достижения</button>
+                    <button class="quest-btn" style="flex:1;" type="button">📈 Статистика</button>
+                </div></div>`;
+
+                elements.contentArea.innerHTML = htmlString;
+
+                // Обработчики
+                const btns = document.querySelectorAll('.quest-btn');
+                if (btns.length >= 2) {
+                    btns[0].onclick = () => alert('🏆 Достижения:\n✓ Первые 100 ⭐️\n✓ 5 заданий\n✓ Первая победа');
+                    btns[1].onclick = () => alert(`📊 Статистика:\n💰 Баланс: ${state.stars} ⭐️\n📋 Заданий: ${completedCount}\n🎮 Игр: ${state.gameStats.gamesPlayed}\n🏆 Побед: ${state.gameStats.wins}`);
+                }
+            }
+
+            function renderLeaderboard() {
+                if (!elements.contentArea) return;
+
+                const leaderboard = getLeaderboard(20);
+                const userRank = getUserRank();
+
+                let htmlString = `
+                    <div class="content-card">
+                        <h3 style="color: #1c1c1e; margin-bottom: 14px; font-weight: 600; font-size: 17px;">🏆 Топ пользователей</h3>
+                        <div class="stats-info">
+                            <span>Всего: ${database.totalUsers}</span>
+                            <span>Всего ⭐️: ${database.totalStars}</span>
+                        </div>
+                        <div class="leaderboard-container">
+                `;
+
+                leaderboard.forEach((leader, index) => {
+                    const isCurrentUser = user && leader.id === user.id;
+                    const rankClass = index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : '';
+
+                    htmlString += `
+                        <div class="leader-item ${isCurrentUser ? 'current-user' : ''}">
+                            <div class="leader-rank ${rankClass}">${leader.rank}</div>
+                            <div class="leader-avatar">
+                                ${leader.avatar ?
+                                    `<img src="${leader.avatar}" alt="User avatar">` :
+                                    `<div>${leader.name.charAt(0)}</div>`
+                                }
+                            </div>
+                            <div class="leader-info">
+                                <div class="leader-name">${leader.name}${isCurrentUser ? '<span class="leader-badge">Вы</span>' : ''}</div>
+                                <div class="leader-username">@${leader.username}</div>
+                            </div>
+                            <div class="leader-stars"><span>${leader.stars}</span><span>⭐️</span></div>
+                        </div>
+                    `;
+                });
+
+                htmlString += `</div>`;
+
+                if (userRank) {
+                    htmlString += `<div style="margin-top: 16px; padding: 12px; background: white; border-radius: 20px; text-align: center;">
+                        <span>Ваше место: </span><span style="font-weight: 700;">#${userRank.rank} из ${userRank.total}</span>
+                        <span style="margin-left: 8px;">(${userRank.stars} ⭐️)</span>
+                    </div>`;
+                }
+
+                htmlString += `</div>`;
+                elements.contentArea.innerHTML = htmlString;
+            }
+
+            function renderBalance() {
+                if (!elements.contentArea) return;
+
+                const minWithdraw = 1000;
+                const canWithdraw = state.stars >= minWithdraw;
+
+                let withdrawalsHtml = '';
+                if (state.withdrawals.length > 0) {
+                    withdrawalsHtml = state.withdrawals.slice(-3).reverse().map(w =>
+                        `<div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span>💰 ${w.amount} ⭐️</span>
+                            <span>${w.date}</span>
+                        </div>`
+                    ).join('');
+                } else {
+                    withdrawalsHtml = '<div style="color: #8e8e93; text-align: center;">Пока нет выводов</div>';
+                }
+
+                const htmlString = `
+                    <div class="content-card">
+                        <div class="balance-container">
+                            <div style="color: #8e8e93; font-size: 16px;">Текущий баланс</div>
+                            <div class="balance-big">${state.stars} <span>⭐️</span></div>
+                            <button class="withdraw-btn" ${!canWithdraw ? 'disabled' : ''} type="button">
+                                ${canWithdraw ? '💰 Вывести' : `Нужно ещё ${minWithdraw - state.stars} ⭐️`}
+                            </button>
+                            <div class="min-withdraw">Минимальный вывод: ${minWithdraw} ⭐️</div>
+                            <div style="margin-top: 24px; padding: 16px; background: #f8f8fa; border-radius: 20px; text-align: left;">
+                                <div style="font-weight: 600; margin-bottom: 12px;">📊 История выводов</div>
+                                ${withdrawalsHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                elements.contentArea.innerHTML = htmlString;
+
+                const withdrawBtn = document.querySelector('.withdraw-btn');
+                if (withdrawBtn && canWithdraw) {
+                    withdrawBtn.onclick = withdraw;
+                }
+            }
+
+            function renderHelp() {
+                if (!elements.contentArea) return;
+
+                const htmlString = `
+                    <div class="content-card">
+                        <div class="help-container">
+                            <div class="help-icon">❓</div>
+                            <div class="help-title">Нужна помощь?</div>
+                            <div class="help-description">Мы всегда готовы помочь! Свяжитесь с менеджером</div>
+                            <div class="manager-card">
+                                <div class="manager-avatar">👨‍💼</div>
+                                <div class="manager-name">Менеджер OKAY</div>
+                                <div class="manager-username">@OKAYPROJECTMANAGER</div>
+                                <button class="contact-btn" id="contactManagerBtn" type="button">
+                                    <span>📱</span> <span>Написать менеджеру</span>
+                                </button>
+                            </div>
+                            <div class="faq-section">
+                                <div class="faq-title">❓ Часто задаваемые вопросы</div>
+                                <div class="faq-item">
+                                    <div class="faq-question"><span>❓</span> Как зарабатывать звезды?</div>
+                                    <div class="faq-answer">Выполняйте ежедневные задания и играйте в игру.</div>
+                                </div>
+                                <div class="faq-item">
+                                    <div class="faq-question"><span>💰</span> Как вывести звезды?</div>
+                                    <div class="faq-answer">Накопите 1000 ⭐️ и нажмите "Вывести" в разделе Баланс.</div>
+                                </div>
+                                <div class="faq-item">
+                                    <div class="faq-question"><span>🏆</span> Как попасть в топ?</div>
+                                    <div class="faq-answer">Зарабатывайте больше звезд! Топ обновляется автоматически.</div>
+                                </div>
+                                <div class="faq-item">
+                                    <div class="faq-question"><span>🎮</span> Как работает игра?</div>
+                                    <div class="faq-answer">Бросьте кубик за 50 ⭐️. Шанс выигрыша 50%. Можно выиграть 100 или 200 ⭐️!</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                elements.contentArea.innerHTML = htmlString;
+
+                const contactBtn = document.getElementById('contactManagerBtn');
+                if (contactBtn) {
+                    contactBtn.onclick = () => {
+                        window.open('https://t.me/OKAYPROJECTMANAGER', '_blank');
+                        if (tg) tg.HapticFeedback?.selectionChanged();
+                    };
+                }
+            }
+
+            // Действия
+            function completeQuest(questId, reward, btnElement) {
                 if (state.completed[questId]) return;
+
+                animateStars(reward, btnElement);
 
                 state.stars += reward;
                 state.completed[questId] = true;
 
                 refreshUI();
+                saveState();
 
-                if (tg) {
-                    tg.HapticFeedback.notificationOccurred('success');
+                const questElement = document.getElementById(questId);
+                if (questElement) {
+                    questElement.classList.add('completed');
+                    const questBtn = questElement.querySelector('.quest-btn');
+                    if (questBtn) {
+                        questBtn.textContent = '✅ Готово';
+                        questBtn.classList.add('completed');
+                    }
                 }
 
-                // Анимация результата
-                elements.gameResult.innerText = `✨ +${reward}`;
-                elements.gameEmoji.innerText = '⭐️';
-                elements.gameEmoji.classList.add('win');
-
-                setTimeout(() => {
-                    elements.gameResult.innerText = 'Нажми, чтобы сыграть';
-                    elements.gameEmoji.innerText = '🎲';
-                    elements.gameEmoji.classList.remove('win');
-                }, 1500);
+                if (tg) tg.HapticFeedback?.notificationOccurred('success');
             }
 
-            // Игра
             function playGame() {
                 const cost = 50;
+                const gameBtn = document.getElementById('playGameBtn');
 
                 if (state.stars < cost) {
-                    elements.gameResult.innerText = '❌ Недостаточно';
-                    elements.gameEmoji.innerText = '😢';
-                    elements.gameEmoji.classList.add('lose');
+                    const gameResult = document.getElementById('gameResult');
+                    const gameEmoji = document.getElementById('gameEmoji');
+                    if (gameResult && gameEmoji) {
+                        gameResult.textContent = '❌ Недостаточно';
+                        gameEmoji.textContent = '😢';
+                        gameEmoji.classList.add('lose');
 
-                    if (tg) {
-                        tg.HapticFeedback.notificationOccurred('error');
+                        setTimeout(() => {
+                            gameEmoji.textContent = '🎲';
+                            gameEmoji.classList.remove('lose');
+                            gameResult.textContent = 'Нажми, чтобы сыграть';
+                        }, 1500);
                     }
-
-                    setTimeout(() => {
-                        elements.gameEmoji.innerText = '🎲';
-                        elements.gameEmoji.classList.remove('lose');
-                    }, 1500);
                     return;
                 }
+
+                animateStars(-cost, gameBtn);
 
                 state.stars -= cost;
                 state.gameStats.gamesPlayed++;
 
                 const isWin = Math.random() > 0.5;
-                let winAmount = 0;
 
                 if (isWin) {
-                    winAmount = Math.random() > 0.3 ? 100 : 200;
+                    const winAmount = Math.random() > 0.3 ? 100 : 200;
                     state.stars += winAmount;
                     state.gameStats.wins++;
 
@@ -1011,99 +1528,122 @@
                         state.gameStats.maxWin = winAmount;
                     }
 
-                    elements.gameEmoji.innerText = '🎉';
-                    elements.gameEmoji.classList.add('win');
-                    elements.gameResult.innerText = `✨ +${winAmount}`;
+                    animateStars(winAmount, gameBtn);
 
-                    if (tg) {
-                        tg.HapticFeedback.notificationOccurred('success');
+                    const gameEmoji = document.getElementById('gameEmoji');
+                    const gameResult = document.getElementById('gameResult');
+                    if (gameEmoji && gameResult) {
+                        gameEmoji.textContent = '🎉';
+                        gameEmoji.classList.add('win');
+                        gameResult.textContent = `+${winAmount} ⭐️`;
                     }
+
+                    if (tg) tg.HapticFeedback?.notificationOccurred('success');
                 } else {
-                    elements.gameEmoji.innerText = '😢';
-                    elements.gameEmoji.classList.add('lose');
-                    elements.gameResult.innerText = '😢 Повезёт в следующий раз';
-
-                    if (tg) {
-                        tg.HapticFeedback.notificationOccurred('error');
+                    const gameEmoji = document.getElementById('gameEmoji');
+                    const gameResult = document.getElementById('gameResult');
+                    if (gameEmoji && gameResult) {
+                        gameEmoji.textContent = '😢';
+                        gameEmoji.classList.add('lose');
+                        gameResult.textContent = '😢 Повезёт в следующий раз';
                     }
+
+                    if (tg) tg.HapticFeedback?.notificationOccurred('error');
                 }
 
                 refreshUI();
+                saveState();
+
+                // Обновляем статистику
+                const maxWinEl = document.getElementById('maxWin');
+                const gamesPlayedEl = document.getElementById('gamesPlayed');
+                const gameWinsEl = document.getElementById('gameWins');
+
+                if (maxWinEl) maxWinEl.textContent = state.gameStats.maxWin + ' ⭐️';
+                if (gamesPlayedEl) gamesPlayedEl.textContent = state.gameStats.gamesPlayed;
+                if (gameWinsEl) gameWinsEl.textContent = state.gameStats.wins;
 
                 setTimeout(() => {
-                    elements.gameEmoji.innerText = '🎲';
-                    elements.gameEmoji.classList.remove('win', 'lose');
-                    elements.gameResult.innerText = 'Нажми, чтобы сыграть';
+                    const gameEmoji = document.getElementById('gameEmoji');
+                    const gameResult = document.getElementById('gameResult');
+                    if (gameEmoji && gameResult && !gameEmoji.classList.contains('win')) {
+                        gameEmoji.textContent = '🎲';
+                        gameEmoji.classList.remove('win', 'lose');
+                        gameResult.textContent = 'Нажми, чтобы сыграть';
+                    }
                 }, 2000);
             }
 
-            // Переключение вкладок с анимацией
-            function switchTab(tabName) {
-                Object.values(sections).forEach(s => s.classList.add('hidden'));
-                Object.values(tabs).forEach(t => t.classList.remove('active'));
+            function withdraw() {
+                const minWithdraw = 1000;
 
-                sections[tabName].classList.remove('hidden');
-                tabs[tabName].classList.add('active');
+                if (state.stars < minWithdraw) {
+                    alert(`❌ Нужно минимум ${minWithdraw} ⭐️`);
+                    return;
+                }
 
-                if (tg) {
-                    tg.HapticFeedback.selectionChanged();
+                const amount = Math.floor(state.stars / 100) * 100;
+
+                if (confirm(`Вывести ${amount} ⭐️?\n\nСредства поступят в течение 24 часов.`)) {
+                    state.stars -= amount;
+                    state.withdrawals.push({
+                        amount: amount,
+                        date: new Date().toLocaleDateString('ru-RU')
+                    });
+
+                    refreshUI();
+                    saveState();
+                    renderBalance();
+
+                    if (tg) tg.HapticFeedback?.notificationOccurred('success');
+                    alert(`✅ Заявка на вывод ${amount} ⭐️ создана!`);
                 }
             }
 
-            // Назначаем обработчики
-            quests.forEach(quest => {
-                document.getElementById(quest.btn).addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    completeQuest(quest.id, quest.reward);
+            // Навигация
+            function setActiveNav(activeId) {
+                Object.values(navItems).forEach(item => {
+                    if (item) item.classList.remove('active');
                 });
-            });
-
-            tabs.quests.addEventListener('click', () => switchTab('quests'));
-            tabs.profile.addEventListener('click', () => switchTab('profile'));
-            tabs.game.addEventListener('click', () => switchTab('game'));
-
-            document.getElementById('playGameBtn').addEventListener('click', playGame);
-
-            document.getElementById('dailyBonusBtn').addEventListener('click', () => {
-                const bonus = 100;
-                state.stars += bonus;
-                refreshUI();
-
-                elements.gameResult.innerText = `🎁 +${bonus}`;
-                elements.gameEmoji.innerText = '🎁';
-                elements.gameEmoji.classList.add('win');
-
-                setTimeout(() => {
-                    elements.gameEmoji.innerText = '🎲';
-                    elements.gameEmoji.classList.remove('win');
-                    elements.gameResult.innerText = 'Нажми, чтобы сыграть';
-                }, 1500);
-
-                if (tg) {
-                    tg.HapticFeedback.notificationOccurred('success');
+                if (navItems[activeId]) {
+                    navItems[activeId].classList.add('active');
                 }
-            });
+            }
 
-            document.getElementById('leaderboardBtn').addEventListener('click', () => {
-                alert('🏆 ТОП OKAY:\n1. Алексей · 5,280\n2. Мария · 4,910\n3. Дмитрий · 4,720\n4. Ты · ' + state.stars);
-            });
+            if (navItems.quests) {
+                navItems.quests.onclick = () => { setActiveNav('quests'); renderQuests(); };
+            }
+            if (navItems.game) {
+                navItems.game.onclick = () => { setActiveNav('game'); renderGame(); };
+            }
+            if (navItems.profile) {
+                navItems.profile.onclick = () => { setActiveNav('profile'); renderProfile(); };
+            }
+            if (navItems.leaderboard) {
+                navItems.leaderboard.onclick = () => { setActiveNav('leaderboard'); renderLeaderboard(); };
+            }
+            if (navItems.balance) {
+                navItems.balance.onclick = () => { setActiveNav('balance'); renderBalance(); };
+            }
+            if (navItems.help) {
+                navItems.help.onclick = () => { setActiveNav('help'); renderHelp(); };
+            }
 
-            document.getElementById('achievementsBtn').addEventListener('click', () => {
-                alert('🏆 Достижения:\n✓ Первые 100\n✓ 5 заданий\n✓ Первая победа');
-            });
+            if (elements.profileHeader) {
+                elements.profileHeader.onclick = () => {
+                    setActiveNav('profile');
+                    renderProfile();
+                };
+            }
 
-            document.getElementById('statsBtn').addEventListener('click', () => {
-                alert(`📊 Статистика:\n💰 Баланс: ${state.stars}\n📋 Заданий: ${Object.values(state.completed).filter(v => v).length}\n🎮 Игр: ${state.gameStats.gamesPlayed}\n🏆 Побед: ${state.gameStats.wins}`);
-            });
-
-            // Анимация при клике на профиль
-            document.getElementById('profileHeader').addEventListener('click', () => {
-                switchTab('profile');
-            });
-
-            // Запуск
+            // Инициализация
             updateUserInfo();
             refreshUI();
+            renderQuests();
+
+            if (user) {
+                updateUserInDatabase();
+            }
         })();
     </script>
 </body>
