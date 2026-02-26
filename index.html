@@ -2,41 +2,48 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>OKAY · Звёзды</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background: #efeff0;
+            background: #f5f5f7;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 8px;
+            padding: 0;
+            margin: 0;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .phone-frame {
-            max-width: 420px;
+            max-width: 100%;
             width: 100%;
+            min-height: 100vh;
             background: #ffffff;
-            border-radius: 36px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
-            overflow: hidden;
+            box-shadow: none;
+            overflow-y: auto;
+            overflow-x: hidden;
             padding: 16px 14px 20px;
-            border: 1px solid rgba(0, 0, 0, 0.02);
-            animation: frameAppear 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+            position: relative;
+            animation: frameAppear 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+            display: flex;
+            flex-direction: column;
         }
 
         @keyframes frameAppear {
-            0% { opacity: 0; transform: scale(0.98) translateY(10px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
 
         #animation-container {
@@ -49,7 +56,102 @@
             z-index: 9999;
         }
 
-        /* Исправленная анимация звезд - добавлены начальные значения */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0 16px;
+            color: #8e8e93;
+            font-size: 15px;
+            font-weight: 500;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .okay-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f2f2f7;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1c1c1e;
+            transition: transform 0.2s ease;
+        }
+
+        .okay-badge:active {
+            transform: scale(0.97);
+        }
+
+        .time {
+            color: #8e8e93;
+            font-size: 14px;
+            background: #f2f2f7;
+            padding: 6px 14px;
+            border-radius: 30px;
+        }
+
+        .top-balance {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8f8fa;
+            padding: 14px 18px;
+            border-radius: 30px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            animation: slideDown 0.5s ease-out forwards;
+            transform: translateZ(0);
+            will-change: transform;
+            transition: transform 0.2s ease;
+        }
+
+        .top-balance:active {
+            transform: scale(0.99);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .balance-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1c1c1e;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .balance-amount {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: white;
+            padding: 8px 22px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 22px;
+            color: #1c1c1e;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+            transform: translateZ(0);
+            will-change: transform, background;
+        }
+
+        .balance-amount span:last-child {
+            font-size: 20px;
+            margin-left: 2px;
+            transition: transform 0.3s ease;
+        }
+
         .star-particle {
             position: fixed;
             pointer-events: none;
@@ -58,6 +160,9 @@
             will-change: transform, opacity;
             filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
             animation: starFly 0.8s cubic-bezier(0.2, 0.9, 0.4, 1) forwards;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform: translateZ(0);
             --x-40: 0px;
             --y-40: 0px;
             --x-80: 0px;
@@ -85,82 +190,6 @@
             }
         }
 
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 4px 6px 12px;
-            color: #8e8e93;
-            font-size: 15px;
-            font-weight: 500;
-        }
-
-        .okay-badge {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: #f2f2f7;
-            padding: 4px 14px;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #1c1c1e;
-        }
-
-        .time {
-            color: #8e8e93;
-            font-size: 14px;
-            background: #f2f2f7;
-            padding: 4px 12px;
-            border-radius: 30px;
-        }
-
-        .top-balance {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #f8f8fa;
-            padding: 12px 16px;
-            border-radius: 28px;
-            margin-bottom: 16px;
-            border: 1px solid rgba(0, 0, 0, 0.02);
-            animation: slideDown 0.5s ease-out forwards;
-            z-index: 2;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .balance-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #1c1c1e;
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        .balance-amount {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background: white;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 22px;
-            color: #1c1c1e;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-            transition: all 0.2s ease;
-        }
-
-        .balance-amount span:last-child {
-            font-size: 20px;
-            margin-left: 2px;
-        }
-
         .balance-highlight {
             animation: balanceHighlight 0.5s ease-out forwards;
         }
@@ -183,12 +212,18 @@
             gap: 14px;
             background: #f8f8fa;
             padding: 14px 16px;
-            border-radius: 28px;
+            border-radius: 30px;
             margin-bottom: 20px;
             border: 1px solid rgba(0, 0, 0, 0.02);
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             animation: slideUp 0.5s ease-out 0.1s both;
             cursor: pointer;
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        .profile-header:active {
+            transform: scale(0.98);
         }
 
         @keyframes slideUp {
@@ -205,7 +240,8 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            flex-shrink: 0;
         }
 
         .avatar img {
@@ -228,6 +264,7 @@
 
         .profile-info {
             flex: 1;
+            min-width: 0;
         }
 
         .name-row {
@@ -235,18 +272,25 @@
             align-items: center;
             gap: 6px;
             margin-bottom: 4px;
+            flex-wrap: wrap;
         }
 
         .profile-name {
             font-size: 17px;
             font-weight: 600;
             color: #1c1c1e;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .username {
             font-size: 13px;
             color: #8e8e93;
             font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .badge {
@@ -256,20 +300,56 @@
             font-weight: 600;
             padding: 3px 8px;
             border-radius: 30px;
+            white-space: nowrap;
         }
 
         .content-card {
             background: #f8f8fa;
-            border-radius: 28px;
+            border-radius: 30px;
             padding: 18px 14px;
             border: 1px solid rgba(0, 0, 0, 0.02);
-            animation: cardAppear 0.5s ease-out forwards;
-            min-height: 400px;
+            animation: cardAppear 0.4s ease-out forwards;
+            margin-bottom: 16px;
+            transform: translateZ(0);
+            will-change: transform, opacity;
         }
 
         @keyframes cardAppear {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quests-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .quest-tab {
+            flex: 1;
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            padding: 10px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #8e8e93;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .quest-tab.active {
+            background: #1c1c1e;
+            color: white;
+        }
+
+        .quest-section {
+            display: block;
+        }
+
+        .quest-section.hidden {
+            display: none;
         }
 
         .quest-item {
@@ -278,44 +358,46 @@
             justify-content: space-between;
             background: white;
             padding: 14px;
-            border-radius: 24px;
-            margin-bottom: 8px;
+            border-radius: 26px;
+            margin-bottom: 10px;
             border: 1px solid rgba(0, 0, 0, 0.02);
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
-            animation: questSlide 0.5s ease-out forwards;
-            cursor: pointer;
+            transition: all 0.2s ease;
+            animation: questSlide 0.4s ease-out forwards;
+            transform: translateZ(0);
+            will-change: transform;
         }
 
-        .quest-item:nth-child(2) { animation-delay: 0.05s; }
-        .quest-item:nth-child(3) { animation-delay: 0.1s; }
-        .quest-item:nth-child(4) { animation-delay: 0.15s; }
-        .quest-item:nth-child(5) { animation-delay: 0.2s; }
-        .quest-item:nth-child(6) { animation-delay: 0.25s; }
-        .quest-item:nth-child(7) { animation-delay: 0.3s; }
+        .quest-item:active {
+            transform: scale(0.99);
+        }
 
         @keyframes questSlide {
-            from { opacity: 0; transform: translateX(-15px); }
+            from { opacity: 0; transform: translateX(-10px); }
             to { opacity: 1; transform: translateX(0); }
         }
 
-        .quest-item:hover {
-            transform: translateX(6px) scale(1.01);
-            background: #fafafc;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        .quest-item.completed {
+            opacity: 0.6;
+            background: #f2f2f7;
+            pointer-events: none;
         }
 
-        .quest-item.completed {
-            opacity: 0.5;
-            background: #f2f2f7;
-            transform: scale(0.99);
-            pointer-events: none;
+        .quest-info {
+            flex: 1;
+            min-width: 0;
         }
 
         .quest-title {
             font-size: 15px;
             font-weight: 600;
             color: #1c1c1e;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .quest-reward {
@@ -327,27 +409,28 @@
             font-size: 13px;
         }
 
+        .quest-reward span {
+            font-size: 14px;
+        }
+
         .quest-btn {
             background: white;
             border: 1px solid rgba(0, 0, 0, 0.02);
             color: #1c1c1e;
             font-weight: 600;
-            padding: 10px 18px;
+            padding: 8px 18px;
             border-radius: 30px;
             font-size: 13px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
             cursor: pointer;
-            z-index: 2;
-        }
-
-        .quest-btn:hover {
-            background: #f8f8fa;
-            transform: scale(1.02);
+            flex-shrink: 0;
+            transform: translateZ(0);
+            will-change: transform;
         }
 
         .quest-btn:active {
-            transform: scale(0.98);
+            transform: scale(0.95);
         }
 
         .quest-btn.completed {
@@ -356,38 +439,48 @@
             pointer-events: none;
         }
 
+        .reset-timer {
+            text-align: center;
+            margin-top: 16px;
+            padding: 12px;
+            background: white;
+            border-radius: 26px;
+            color: #8e8e93;
+            font-size: 13px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
         .stats-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
             margin-top: 16px;
         }
 
         .stat-item {
             background: white;
-            border-radius: 24px;
+            border-radius: 26px;
             padding: 14px 10px;
-            flex: 1 1 40%;
             border: 1px solid rgba(0, 0, 0, 0.02);
             text-align: center;
-            transition: all 0.4s ease;
-            animation: statPop 0.5s ease-out forwards;
+            transition: all 0.2s ease;
+            animation: statPop 0.4s ease-out forwards;
+            transform: translateZ(0);
+            will-change: transform;
         }
 
-        .stat-item:nth-child(1) { animation-delay: 0.1s; }
-        .stat-item:nth-child(2) { animation-delay: 0.15s; }
-        .stat-item:nth-child(3) { animation-delay: 0.2s; }
-        .stat-item:nth-child(4) { animation-delay: 0.25s; }
+        .stat-item:active {
+            transform: scale(0.97);
+        }
 
         @keyframes statPop {
             from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
-        }
-
-        .stat-item:hover {
-            transform: translateY(-4px) scale(1.02);
-            background: #fafafc;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.02);
         }
 
         .stat-value {
@@ -415,22 +508,134 @@
             height: 100%;
             background: #1c1c1e;
             border-radius: 30px;
-            transition: width 0.8s cubic-bezier(0.2, 0.9, 0.4, 1);
+            transition: width 0.5s cubic-bezier(0.2, 0.9, 0.4, 1);
+        }
+
+        .referral-card {
+            background: white;
+            border-radius: 26px;
+            padding: 18px;
+            margin: 16px 0;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            text-align: center;
+        }
+
+        .referral-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin-bottom: 12px;
+        }
+
+        .referral-link-container {
+            display: flex;
+            align-items: center;
+            background: #f8f8fa;
+            border-radius: 40px;
+            padding: 4px;
+            margin: 12px 0;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .referral-link {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #1c1c1e;
+            background: transparent;
+            border: none;
+            outline: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .copy-btn {
+            background: #1c1c1e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        .copy-btn.copied {
+            background: #34c759;
+        }
+
+        .referral-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 16px 0;
+            padding: 12px;
+            background: #f8f8fa;
+            border-radius: 26px;
+        }
+
+        .referral-stat {
+            text-align: center;
+        }
+
+        .referral-stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1c1c1e;
+        }
+
+        .referral-stat-label {
+            color: #8e8e93;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .invite-btn {
+            background: #1c1c1e;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transform: translateZ(0);
+            will-change: transform;
+            margin-top: 8px;
+        }
+
+        .invite-btn:active {
+            transform: scale(0.97);
         }
 
         .game-container {
             text-align: center;
-            padding: 18px;
+            padding: 20px;
             background: white;
-            border-radius: 28px;
+            border-radius: 30px;
             margin: 16px 0;
         }
 
         .game-emoji {
-            font-size: 70px;
+            font-size: 80px;
             margin-bottom: 12px;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.05));
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.05));
             animation: gameFloat 3s ease-in-out infinite;
+            transform: translateZ(0);
+            will-change: transform;
         }
 
         @keyframes gameFloat {
@@ -439,7 +644,7 @@
         }
 
         .game-emoji.win {
-            animation: winBounce 0.8s ease forwards;
+            animation: winBounce 0.6s ease forwards;
         }
 
         @keyframes winBounce {
@@ -453,76 +658,38 @@
 
         @keyframes loseShake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px) rotate(-5deg); }
-            75% { transform: translateX(10px) rotate(5deg); }
+            25% { transform: translateX(-8px) rotate(-5deg); }
+            75% { transform: translateX(8px) rotate(5deg); }
         }
 
         .game-btn {
             background: #1c1c1e;
             color: white;
             border: none;
-            padding: 14px 28px;
-            border-radius: 36px;
+            padding: 16px 32px;
+            border-radius: 40px;
             font-size: 16px;
             font-weight: 600;
             margin: 12px 0;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(28, 28, 30, 0.1);
-        }
-
-        .game-btn:hover {
-            transform: scale(1.05);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(28, 28, 30, 0.1);
+            width: 100%;
+            transform: translateZ(0);
+            will-change: transform;
         }
 
         .game-btn:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
 
-        .balance-container {
-            text-align: center;
-            padding: 24px;
-            background: white;
-            border-radius: 28px;
-            margin: 16px 0;
-        }
-
-        .balance-big {
-            font-size: 48px;
-            font-weight: 700;
-            color: #1c1c1e;
-            margin: 16px 0;
-        }
-
-        .balance-big span {
-            font-size: 40px;
-            margin-left: 8px;
-        }
-
-        .withdraw-btn {
-            background: #1c1c1e;
-            color: white;
-            border: none;
-            padding: 18px 32px;
-            border-radius: 40px;
+        .game-result {
             font-size: 18px;
             font-weight: 600;
-            width: 100%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 16px 0;
-        }
-
-        .withdraw-btn:hover {
-            transform: scale(1.02);
-            background: #2c2c2e;
-        }
-
-        .withdraw-btn:disabled {
-            background: #e8e8ed;
-            color: #8e8e93;
-            pointer-events: none;
-            opacity: 0.7;
+            color: #1c1c1e;
+            margin: 12px 0;
+            min-height: 40px;
+            transition: all 0.2s ease;
         }
 
         .leaderboard-container {
@@ -535,16 +702,16 @@
             gap: 12px;
             background: white;
             padding: 12px;
-            border-radius: 24px;
+            border-radius: 26px;
             margin-bottom: 8px;
             border: 1px solid rgba(0, 0, 0, 0.02);
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            transform: translateZ(0);
+            will-change: transform;
         }
 
-        .leader-item:hover {
-            transform: translateX(6px);
-            background: #fafafc;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        .leader-item:active {
+            transform: translateX(5px);
         }
 
         .leader-item.current-user {
@@ -553,8 +720,8 @@
         }
 
         .leader-rank {
-            width: 32px;
-            height: 32px;
+            width: 34px;
+            height: 34px;
             background: #f2f2f7;
             border-radius: 50%;
             display: flex;
@@ -567,12 +734,10 @@
 
         .leader-rank.top-1 {
             background: #ffd700;
-            color: #1c1c1e;
         }
 
         .leader-rank.top-2 {
             background: #c0c0c0;
-            color: #1c1c1e;
         }
 
         .leader-rank.top-3 {
@@ -629,17 +794,13 @@
             flex-shrink: 0;
         }
 
-        .leader-stars span {
-            font-size: 16px;
-        }
-
         .leader-badge {
             background: #1c1c1e;
             color: white;
-            font-size: 10px;
-            padding: 2px 8px;
+            font-size: 9px;
+            padding: 2px 6px;
             border-radius: 20px;
-            margin-left: 8px;
+            margin-left: 6px;
             display: inline-block;
         }
 
@@ -651,7 +812,7 @@
             margin: 16px 0 8px;
             padding: 12px;
             background: white;
-            border-radius: 20px;
+            border-radius: 26px;
         }
 
         .help-container {
@@ -686,11 +847,11 @@
 
         .manager-card {
             background: white;
-            border-radius: 28px;
+            border-radius: 30px;
             padding: 24px;
             margin: 20px 0;
             border: 1px solid rgba(0, 0, 0, 0.02);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02);
         }
 
         .manager-avatar {
@@ -729,69 +890,88 @@
             font-weight: 600;
             width: 100%;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-        }
-
-        .contact-btn:hover {
-            transform: scale(1.02);
-            background: #2c2c2e;
+            transform: translateZ(0);
+            will-change: transform;
         }
 
         .contact-btn:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
 
-        .faq-section {
-            margin-top: 32px;
-            text-align: left;
+        .balance-container {
+            text-align: center;
+            padding: 24px;
+            background: white;
+            border-radius: 30px;
+            margin: 16px 0;
         }
 
-        .faq-title {
+        .balance-big {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin: 16px 0;
+        }
+
+        .balance-big span {
+            font-size: 40px;
+            margin-left: 8px;
+        }
+
+        .withdraw-btn {
+            background: #1c1c1e;
+            color: white;
+            border: none;
+            padding: 18px 32px;
+            border-radius: 40px;
             font-size: 18px;
             font-weight: 600;
-            color: #1c1c1e;
-            margin-bottom: 16px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 16px 0;
+            transform: translateZ(0);
+            will-change: transform;
         }
 
-        .faq-item {
-            background: white;
-            border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(0, 0, 0, 0.02);
+        .withdraw-btn:active {
+            transform: scale(0.97);
         }
 
-        .faq-question {
-            font-weight: 600;
-            color: #1c1c1e;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .withdraw-btn:disabled {
+            background: #e8e8ed;
+            color: #8e8e93;
+            pointer-events: none;
+            opacity: 0.7;
         }
 
-        .faq-answer {
+        .min-withdraw {
             color: #8e8e93;
             font-size: 14px;
-            line-height: 1.5;
-            padding-left: 28px;
+            margin-top: 8px;
         }
 
         .bottom-nav {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            margin-top: 16px;
-            padding: 6px 4px;
+            margin-top: auto;
+            padding: 8px 4px;
             background: #f8f8fa;
             border-radius: 40px;
             border: 1px solid rgba(0, 0, 0, 0.02);
             animation: slideUp 0.5s ease-out 0.2s forwards;
             gap: 2px;
+            position: sticky;
+            bottom: 10px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            flex-wrap: wrap;
         }
 
         .nav-item {
@@ -802,37 +982,39 @@
             padding: 6px 0;
             border-radius: 30px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            transition: all 0.2s ease;
             color: #8e8e93;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 500;
             background: transparent;
             border: none;
             flex: 1;
-            min-width: 0;
-        }
-
-        .nav-item.active {
-            color: #1c1c1e;
-            background: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-        }
-
-        .nav-item span:first-child {
-            font-size: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        .nav-item:hover span:first-child {
-            transform: translateY(-2px);
+            min-width: 45px;
+            transform: translateZ(0);
+            will-change: transform, color, background;
         }
 
         .nav-item:active {
             transform: scale(0.95);
         }
 
+        .nav-item.active {
+            color: #1c1c1e;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .nav-item span:first-child {
+            font-size: 18px;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-item:hover span:first-child {
+            transform: translateY(-2px);
+        }
+
         .nav-item span:last-child {
-            font-size: 9px;
+            font-size: 8px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -860,7 +1042,7 @@
         <div class="top-balance">
             <div class="balance-label">
                 <span>💰</span>
-                <span>Мой баланс</span>
+                <span>Баланс</span>
             </div>
             <div class="balance-amount" id="topBalance">
                 <span id="starBalance">0</span>
@@ -887,7 +1069,7 @@
         <div class="bottom-nav">
             <button class="nav-item active" id="navQuests" type="button">
                 <span>📋</span>
-                <span>Задания</span>
+                <span>Квесты</span>
             </button>
             <button class="nav-item" id="navGame" type="button">
                 <span>🎮</span>
@@ -899,11 +1081,11 @@
             </button>
             <button class="nav-item" id="navLeaderboard" type="button">
                 <span>🏆</span>
-                <span>Лидеры</span>
+                <span>Топ</span>
             </button>
             <button class="nav-item" id="navBalance" type="button">
                 <span>💰</span>
-                <span>Баланс</span>
+                <span>Кошелёк</span>
             </button>
             <button class="nav-item" id="navHelp" type="button">
                 <span>❓</span>
@@ -917,6 +1099,10 @@
         (function() {
             'use strict';
 
+            if ('virtualKeyboard' in navigator) {
+                navigator.virtualKeyboard.overlaysContent = true;
+            }
+
             // Telegram WebApp
             const tg = window.Telegram?.WebApp;
             const user = tg?.initDataUnsafe?.user || null;
@@ -926,12 +1112,15 @@
                 tg.ready();
                 tg.backgroundColor = '#ffffff';
                 tg.headerColor = '#ffffff';
+                if (tg.setHeaderColor) tg.setHeaderColor('#ffffff');
             }
 
-            // База данных
-            const DB_KEY = 'okay_users_database';
-            const CURRENT_USER_KEY = 'okay_current_user';
+            // ===== БАЗА ДАННЫХ =====
+            const DB_KEY = 'okay_users_database_v5';
+            const CURRENT_USER_KEY = 'okay_current_user_v5';
+            const QUESTS_KEY = 'okay_quests_v5';
 
+            // Инициализация базы данных
             let database = {
                 users: {},
                 totalUsers: 0,
@@ -942,26 +1131,99 @@
             try {
                 const savedDB = localStorage.getItem(DB_KEY);
                 if (savedDB) {
-                    database = JSON.parse(savedDB);
+                    database = JSON.parse(savedDB) || database;
                 }
             } catch (e) {
-                console.log('Database load error, using default');
+                console.log('Database load error');
             }
 
+            // ===== КВЕСТЫ =====
+            const dailyQuests = [
+                { id: 'daily1', title: '👥 Пригласить друга', reward: 150, type: 'daily' },
+                { id: 'daily2', title: '📺 Подписаться на OKAY', reward: 200, type: 'daily' },
+                { id: 'daily3', title: '🔄 Сделать репост', reward: 120, type: 'daily' },
+                { id: 'daily4', title: '⭐️ Ежедневный вход', reward: 50, type: 'daily' },
+                { id: 'daily5', title: '💬 3 комментария', reward: 100, type: 'daily' }
+            ];
+
+            const weeklyQuests = [
+                { id: 'weekly1', title: '🔥 5 дней подряд', reward: 500, type: 'weekly' },
+                { id: 'weekly2', title: '👥 3 приглашённых друга', reward: 450, type: 'weekly' },
+                { id: 'weekly3', title: '🎮 10 игр', reward: 300, type: 'weekly' },
+                { id: 'weekly4', title: '📱 10 репостов', reward: 400, type: 'weekly' },
+                { id: 'weekly5', title: '🏆 Топ-10 за неделю', reward: 600, type: 'weekly' }
+            ];
+
+            // Состояние квестов
+            let questState = {
+                daily: {},
+                weekly: {},
+                lastDailyReset: new Date().toDateString(),
+                lastWeeklyReset: getWeekNumber(new Date())
+            };
+
+            try {
+                const savedQuests = localStorage.getItem(QUESTS_KEY);
+                if (savedQuests) {
+                    questState = JSON.parse(savedQuests) || questState;
+                }
+            } catch (e) {
+                console.log('Quests load error');
+            }
+
+            function getWeekNumber(date) {
+                const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+                const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+                return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+            }
+
+            function checkQuestReset() {
+                const today = new Date().toDateString();
+                const currentWeek = getWeekNumber(new Date());
+                let changed = false;
+
+                if (questState.lastDailyReset !== today) {
+                    questState.daily = {};
+                    questState.lastDailyReset = today;
+                    changed = true;
+                }
+
+                if (questState.lastWeeklyReset !== currentWeek) {
+                    questState.weekly = {};
+                    questState.lastWeeklyReset = currentWeek;
+                    changed = true;
+                }
+
+                if (changed) {
+                    saveQuestState();
+                }
+            }
+
+            function saveQuestState() {
+                try {
+                    localStorage.setItem(QUESTS_KEY, JSON.stringify(questState));
+                } catch (e) {
+                    console.log('Quest save error');
+                }
+            }
+
+            // ===== СОСТОЯНИЕ ПОЛЬЗОВАТЕЛЯ =====
             const defaultState = {
                 stars: 500,
-                completed: {
-                    quest1: false, quest2: false, quest3: false,
-                    quest4: false, quest5: false, quest6: false,
-                    quest7: false
-                },
+                dailyQuests: {},
+                weeklyQuests: {},
                 gameStats: {
                     wins: 0,
                     gamesPlayed: 0,
                     maxWin: 0
                 },
+                referrals: {
+                    count: 0,
+                    earned: 0
+                },
                 joinDate: new Date().toLocaleDateString('ru-RU'),
-                withdrawals: []
+                withdrawals: [],
+                lastActive: new Date().toISOString()
             };
 
             let state = { ...defaultState };
@@ -973,10 +1235,10 @@
                     state = { ...defaultState, ...parsed };
                 }
             } catch (e) {
-                console.log('State load error, using default');
+                console.log('State load error');
             }
 
-            // Элементы
+            // ===== ЭЛЕМЕНТЫ =====
             const elements = {
                 contentArea: document.getElementById('contentArea'),
                 starBalance: document.getElementById('starBalance'),
@@ -991,7 +1253,14 @@
                 currentTime: document.getElementById('currentTime')
             };
 
-            // Навигация
+            // Проверка существования элементов
+            for (let key in elements) {
+                if (!elements[key]) {
+                    console.log(`Element ${key} not found`);
+                }
+            }
+
+            // ===== НАВИГАЦИЯ =====
             const navItems = {
                 quests: document.getElementById('navQuests'),
                 game: document.getElementById('navGame'),
@@ -1001,18 +1270,8 @@
                 help: document.getElementById('navHelp')
             };
 
-            // Квесты
-            const quests = [
-                { id: 'quest1', title: '👥 Пригласить друга', reward: 150 },
-                { id: 'quest2', title: '📺 Подписаться на OKAY', reward: 200 },
-                { id: 'quest3', title: '🔄 Сделать репост', reward: 200 },
-                { id: 'quest4', title: '📱 Опубликовать истории', reward: 120 },
-                { id: 'quest5', title: '⭐️ Ежедневный вход', reward: 50 },
-                { id: 'quest6', title: '💬 5 комментариев', reward: 180 },
-                { id: 'quest7', title: '🎮 Сыграть в игру', reward: 100 }
-            ];
+            // ===== ФУНКЦИИ =====
 
-            // Обновление времени
             function updateTime() {
                 if (!elements.currentTime) return;
                 const now = new Date();
@@ -1023,9 +1282,8 @@
             updateTime();
             setInterval(updateTime, 1000);
 
-            // Сохранение в БД
             function updateUserInDatabase() {
-                if (!user) return;
+                if (!user || !user.id) return;
 
                 try {
                     database.users[user.id] = {
@@ -1033,11 +1291,13 @@
                         name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'OKAY User',
                         username: user.username || `user_${user.id}`,
                         avatar: user.photo_url || null,
-                        stars: state.stars,
+                        stars: state.stars || 0,
                         joined: state.joinDate,
                         lastSeen: new Date().toLocaleDateString('ru-RU'),
-                        questsCompleted: Object.values(state.completed).filter(v => v).length,
-                        gameWins: state.gameStats.wins
+                        questsCompleted: getCompletedQuestsCount(),
+                        gameWins: state.gameStats.wins || 0,
+                        gamesPlayed: state.gameStats.gamesPlayed || 0,
+                        referrals: state.referrals.count || 0
                     };
 
                     database.totalUsers = Object.keys(database.users).length;
@@ -1050,8 +1310,14 @@
                 }
             }
 
+            function getCompletedQuestsCount() {
+                return (Object.values(state.dailyQuests || {}).filter(v => v).length || 0) +
+                       (Object.values(state.weeklyQuests || {}).filter(v => v).length || 0);
+            }
+
             function saveState() {
                 try {
+                    state.lastActive = new Date().toISOString();
                     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(state));
                     updateUserInDatabase();
                 } catch (e) {
@@ -1059,20 +1325,22 @@
                 }
             }
 
-            // Топ пользователей
             function getLeaderboard(limit = 20) {
-                const users = Object.values(database.users);
+                const users = Object.values(database.users || {});
                 return users
+                    .filter(u => u && u.stars !== undefined)
                     .sort((a, b) => (b.stars || 0) - (a.stars || 0))
                     .slice(0, limit)
                     .map((u, index) => ({ ...u, rank: index + 1 }));
             }
 
             function getUserRank() {
-                if (!user) return null;
+                if (!user || !user.id) return null;
 
-                const users = Object.values(database.users);
-                const sorted = users.sort((a, b) => (b.stars || 0) - (a.stars || 0));
+                const users = Object.values(database.users || {});
+                const sorted = users
+                    .filter(u => u && u.stars !== undefined)
+                    .sort((a, b) => (b.stars || 0) - (a.stars || 0));
                 const index = sorted.findIndex(u => u.id === user.id);
 
                 if (index === -1) return null;
@@ -1084,7 +1352,6 @@
                 };
             }
 
-            // Анимация звезд
             function animateStars(amount, sourceElement) {
                 if (!sourceElement || !elements.animationContainer || !elements.topBalance) return;
 
@@ -1100,40 +1367,38 @@
                     const deltaX = targetX - sourceX;
                     const deltaY = targetY - sourceY;
 
-                    const starCount = Math.min(Math.floor(Math.abs(amount) / 8), 12);
+                    const starCount = Math.min(Math.floor(Math.abs(amount) / 10) || 1, 8);
 
                     for (let i = 0; i < starCount; i++) {
                         setTimeout(() => {
                             const star = document.createElement('div');
                             star.className = 'star-particle';
                             star.innerHTML = '⭐️';
-                            star.style.left = (sourceX + (Math.random() - 0.5) * 50) + 'px';
-                            star.style.top = (sourceY + (Math.random() - 0.5) * 50) + 'px';
-
-                            const x40 = deltaX * 0.4 + (Math.random() - 0.5) * 30;
-                            const y40 = deltaY * 0.4 + (Math.random() - 0.5) * 30 - 40;
-                            const x80 = deltaX * 0.8 + (Math.random() - 0.5) * 20;
-                            const y80 = deltaY * 0.8 + (Math.random() - 0.5) * 20 - 10;
-
-                            star.style.setProperty('--x-40', x40 + 'px');
-                            star.style.setProperty('--y-40', y40 + 'px');
-                            star.style.setProperty('--x-80', x80 + 'px');
-                            star.style.setProperty('--y-80', y80 + 'px');
+                            star.style.left = (sourceX + (Math.random() - 0.5) * 40) + 'px';
+                            star.style.top = (sourceY + (Math.random() - 0.5) * 40) + 'px';
+                            star.style.setProperty('--x-40', (deltaX * 0.4 + (Math.random() - 0.5) * 30) + 'px');
+                            star.style.setProperty('--y-40', (deltaY * 0.4 + (Math.random() - 0.5) * 30 - 40) + 'px');
+                            star.style.setProperty('--x-80', (deltaX * 0.8 + (Math.random() - 0.5) * 20) + 'px');
+                            star.style.setProperty('--y-80', (deltaY * 0.8 + (Math.random() - 0.5) * 20 - 10) + 'px');
                             star.style.setProperty('--x-final', deltaX + 'px');
                             star.style.setProperty('--y-final', deltaY + 'px');
 
-                            elements.animationContainer.appendChild(star);
+                            if (elements.animationContainer) {
+                                elements.animationContainer.appendChild(star);
+                            }
 
                             setTimeout(() => {
                                 if (star.parentNode) star.remove();
                             }, 800);
-                        }, i * 60);
+                        }, i * 50);
                     }
 
                     if (elements.balanceAmount) {
                         elements.balanceAmount.classList.add('balance-highlight');
                         setTimeout(() => {
-                            elements.balanceAmount?.classList.remove('balance-highlight');
+                            if (elements.balanceAmount) {
+                                elements.balanceAmount.classList.remove('balance-highlight');
+                            }
                         }, 500);
                     }
                 } catch (e) {
@@ -1141,10 +1406,9 @@
                 }
             }
 
-            // Обновление UI
             function refreshUI() {
                 if (elements.starBalance) {
-                    elements.starBalance.textContent = state.stars;
+                    elements.starBalance.textContent = state.stars || 0;
                 }
             }
 
@@ -1180,43 +1444,265 @@
                 }
             }
 
-            // Рендер страниц
+            function shareReferralLink() {
+                if (!user) {
+                    alert('Войдите в Telegram для использования реферальной программы');
+                    return;
+                }
+
+                const botUsername = 'OKAYBot';
+                const referralLink = `https://t.me/${botUsername}?start=ref_${user.id}`;
+
+                if (tg) {
+                    tg.openTelegramLink(referralLink);
+                } else {
+                    window.open(referralLink, '_blank');
+                }
+            }
+
+            // ===== РЕНДЕР СТРАНИЦ =====
+
             function renderQuests() {
                 if (!elements.contentArea) return;
 
-                const completedCount = Object.values(state.completed).filter(v => v).length;
+                checkQuestReset();
 
-                let htmlString = '<div class="content-card"><h3 style="color: #1c1c1e; margin-bottom: 14px; font-weight: 600; font-size: 17px;">📋 Ежедневные задания</h3>';
+                const dailyCompleted = Object.values(state.dailyQuests || {}).filter(v => v).length || 0;
+                const weeklyCompleted = Object.values(state.weeklyQuests || {}).filter(v => v).length || 0;
 
-                quests.forEach((quest, index) => {
-                    const questId = `quest${index + 1}`;
-                    const isCompleted = state.completed[questId] || false;
+                const now = new Date();
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
+                const msUntilMidnight = tomorrow - now;
+                const hoursLeft = Math.floor(msUntilMidnight / (1000 * 60 * 60));
+                const minutesLeft = Math.floor((msUntilMidnight % (1000 * 60 * 60)) / (1000 * 60));
+
+                let htmlString = `
+                    <div class="content-card">
+                        <div class="quests-tabs">
+                            <button class="quest-tab active" id="dailyTab" type="button">📅 Ежедневные</button>
+                            <button class="quest-tab" id="weeklyTab" type="button">📆 Недельные</button>
+                        </div>
+
+                        <div class="quest-section" id="dailySection">
+                `;
+
+                dailyQuests.forEach((quest) => {
+                    const isCompleted = state.dailyQuests?.[quest.id] || false;
+                    let titleDisplay = quest.title;
+
+                    if (quest.id === 'daily1') {
+                        titleDisplay = '<span>👥 Пригласить друга</span> <span style="color:#34c759; font-size:11px;">(нажми для ссылки)</span>';
+                    }
 
                     htmlString += `
-                        <div class="quest-item ${isCompleted ? 'completed' : ''}" id="${questId}">
+                        <div class="quest-item ${isCompleted ? 'completed' : ''}" id="${quest.id}">
                             <div class="quest-info">
-                                <div class="quest-title">${quest.title}</div>
+                                <div class="quest-title">${titleDisplay}</div>
                                 <div class="quest-reward">⭐️ +${quest.reward}</div>
                             </div>
-                            <button class="quest-btn ${isCompleted ? 'completed' : ''}" type="button">
-                                ${isCompleted ? '✅ Готово' : 'Взять'}
-                            </button>
+                            <button class="quest-btn ${isCompleted ? 'completed' : ''}" type="button">${isCompleted ? '✅' : 'Взять'}</button>
                         </div>
                     `;
                 });
 
-                htmlString += `<div style="margin-top: 16px; padding: 12px; background: white; border-radius: 20px; text-align: center; color: #8e8e93; font-size: 14px;">✅ Выполнено: ${completedCount} / ${quests.length}</div></div>`;
+                htmlString += `
+                            <div class="reset-timer">⏰ Сброс через ${hoursLeft}ч ${minutesLeft}м</div>
+                        </div>
+
+                        <div class="quest-section hidden" id="weeklySection">
+                `;
+
+                weeklyQuests.forEach((quest) => {
+                    const isCompleted = state.weeklyQuests?.[quest.id] || false;
+                    htmlString += `
+                        <div class="quest-item ${isCompleted ? 'completed' : ''}" id="${quest.id}">
+                            <div class="quest-info">
+                                <div class="quest-title">${quest.title}</div>
+                                <div class="quest-reward">⭐️ +${quest.reward}</div>
+                            </div>
+                            <button class="quest-btn ${isCompleted ? 'completed' : ''}" type="button">${isCompleted ? '✅' : 'Взять'}</button>
+                        </div>
+                    `;
+                });
+
+                const weekNumber = getWeekNumber(new Date());
+                htmlString += `
+                            <div class="reset-timer">📆 Неделя ${weekNumber} · Сброс в понедельник</div>
+                        </div>
+
+                        <div style="margin-top: 16px; padding: 12px; background: white; border-radius: 26px; text-align: center; color: #8e8e93;">
+                            ✅ Выполнено: ${dailyCompleted + weeklyCompleted} / ${dailyQuests.length + weeklyQuests.length}
+                        </div>
+                    </div>
+                `;
 
                 elements.contentArea.innerHTML = htmlString;
 
-                // Добавляем обработчики
-                quests.forEach((quest, index) => {
-                    const questId = `quest${index + 1}`;
-                    const btn = document.querySelector(`#${questId} .quest-btn`);
-                    if (btn && !state.completed[questId]) {
-                        btn.onclick = () => completeQuest(questId, quest.reward, btn);
+                const dailyTab = document.getElementById('dailyTab');
+                const weeklyTab = document.getElementById('weeklyTab');
+                const dailySection = document.getElementById('dailySection');
+                const weeklySection = document.getElementById('weeklySection');
+
+                if (dailyTab && weeklyTab && dailySection && weeklySection) {
+                    dailyTab.onclick = () => {
+                        dailyTab.classList.add('active');
+                        weeklyTab.classList.remove('active');
+                        dailySection.classList.remove('hidden');
+                        weeklySection.classList.add('hidden');
+                    };
+
+                    weeklyTab.onclick = () => {
+                        weeklyTab.classList.add('active');
+                        dailyTab.classList.remove('active');
+                        weeklySection.classList.remove('hidden');
+                        dailySection.classList.add('hidden');
+                    };
+                }
+
+                dailyQuests.forEach(quest => {
+                    const btn = document.querySelector(`#${quest.id} .quest-btn`);
+                    if (btn && !state.dailyQuests?.[quest.id]) {
+                        btn.onclick = () => {
+                            if (quest.id === 'daily1') {
+                                shareReferralLink();
+                            }
+                            completeQuest(quest.id, quest.reward, btn, 'daily');
+                        };
                     }
                 });
+
+                weeklyQuests.forEach(quest => {
+                    const btn = document.querySelector(`#${quest.id} .quest-btn`);
+                    if (btn && !state.weeklyQuests?.[quest.id]) {
+                        btn.onclick = () => completeQuest(quest.id, quest.reward, btn, 'weekly');
+                    }
+                });
+            }
+
+            function completeQuest(questId, reward, btnElement, type) {
+                if (!questState) return;
+
+                if (type === 'daily' && state.dailyQuests?.[questId]) return;
+                if (type === 'weekly' && state.weeklyQuests?.[questId]) return;
+
+                animateStars(reward, btnElement);
+
+                state.stars = (state.stars || 0) + reward;
+
+                if (type === 'daily') {
+                    if (!state.dailyQuests) state.dailyQuests = {};
+                    state.dailyQuests[questId] = true;
+                } else {
+                    if (!state.weeklyQuests) state.weeklyQuests = {};
+                    state.weeklyQuests[questId] = true;
+                }
+
+                refreshUI();
+                saveState();
+
+                const questElement = document.getElementById(questId);
+                if (questElement) {
+                    questElement.classList.add('completed');
+                    const questBtn = questElement.querySelector('.quest-btn');
+                    if (questBtn) {
+                        questBtn.textContent = '✅';
+                        questBtn.classList.add('completed');
+                    }
+                }
+
+                if (tg && tg.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                }
+            }
+
+            function playGame() {
+                const cost = 50;
+                const gameBtn = document.getElementById('playGameBtn');
+
+                if (!gameBtn) return;
+
+                if ((state.stars || 0) < cost) {
+                    const gameResult = document.getElementById('gameResult');
+                    const gameEmoji = document.getElementById('gameEmoji');
+                    if (gameResult && gameEmoji) {
+                        gameResult.textContent = '❌ Недостаточно';
+                        gameEmoji.textContent = '😢';
+                        gameEmoji.classList.add('lose');
+
+                        setTimeout(() => {
+                            gameEmoji.textContent = '🎲';
+                            gameEmoji.classList.remove('lose');
+                            gameResult.textContent = 'Нажми, чтобы сыграть';
+                        }, 1500);
+                    }
+                    return;
+                }
+
+                animateStars(-cost, gameBtn);
+
+                state.stars = (state.stars || 0) - cost;
+                state.gameStats.gamesPlayed = (state.gameStats.gamesPlayed || 0) + 1;
+
+                const isWin = Math.random() > 0.5;
+
+                if (isWin) {
+                    const winAmount = Math.random() > 0.3 ? 100 : 200;
+                    state.stars = (state.stars || 0) + winAmount;
+                    state.gameStats.wins = (state.gameStats.wins || 0) + 1;
+
+                    if (winAmount > (state.gameStats.maxWin || 0)) {
+                        state.gameStats.maxWin = winAmount;
+                    }
+
+                    animateStars(winAmount, gameBtn);
+
+                    const gameEmoji = document.getElementById('gameEmoji');
+                    const gameResult = document.getElementById('gameResult');
+                    if (gameEmoji && gameResult) {
+                        gameEmoji.textContent = '🎉';
+                        gameEmoji.classList.add('win');
+                        gameResult.textContent = `+${winAmount} ⭐️`;
+                    }
+
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.notificationOccurred('success');
+                    }
+                } else {
+                    const gameEmoji = document.getElementById('gameEmoji');
+                    const gameResult = document.getElementById('gameResult');
+                    if (gameEmoji && gameResult) {
+                        gameEmoji.textContent = '😢';
+                        gameEmoji.classList.add('lose');
+                        gameResult.textContent = '😢 Повезёт в следующий раз';
+                    }
+
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.notificationOccurred('error');
+                    }
+                }
+
+                refreshUI();
+                saveState();
+
+                const maxWinEl = document.getElementById('maxWin');
+                const gamesPlayedEl = document.getElementById('gamesPlayed');
+                const gameWinsEl = document.getElementById('gameWins');
+
+                if (maxWinEl) maxWinEl.textContent = (state.gameStats.maxWin || 0) + ' ⭐️';
+                if (gamesPlayedEl) gamesPlayedEl.textContent = state.gameStats.gamesPlayed || 0;
+                if (gameWinsEl) gameWinsEl.textContent = state.gameStats.wins || 0;
+
+                setTimeout(() => {
+                    const gameEmoji = document.getElementById('gameEmoji');
+                    const gameResult = document.getElementById('gameResult');
+                    if (gameEmoji && gameResult && !gameEmoji.classList.contains('win')) {
+                        gameEmoji.textContent = '🎲';
+                        gameEmoji.classList.remove('win', 'lose');
+                        gameResult.textContent = 'Нажми, чтобы сыграть';
+                    }
+                }, 2000);
             }
 
             function renderGame() {
@@ -1237,15 +1723,15 @@
                         <div style="margin-top: 14px; padding: 14px; background: white; border-radius: 24px;">
                             <div style="display: flex; justify-content: space-between; color: #5c5c66; font-size: 13px;">
                                 <span>💰 Рекорд:</span>
-                                <span id="maxWin">${state.gameStats.maxWin} ⭐️</span>
+                                <span id="maxWin">${state.gameStats.maxWin || 0} ⭐️</span>
                             </div>
                             <div style="display: flex; justify-content: space-between; color: #5c5c66; margin-top: 6px; font-size: 13px;">
                                 <span>🎮 Всего игр:</span>
-                                <span id="gamesPlayed">${state.gameStats.gamesPlayed}</span>
+                                <span id="gamesPlayed">${state.gameStats.gamesPlayed || 0}</span>
                             </div>
                             <div style="display: flex; justify-content: space-between; color: #5c5c66; margin-top: 6px; font-size: 13px;">
                                 <span>🏆 Побед:</span>
-                                <span id="gameWins">${state.gameStats.wins}</span>
+                                <span id="gameWins">${state.gameStats.wins || 0}</span>
                             </div>
                         </div>
                     </div>
@@ -1262,10 +1748,13 @@
             function renderProfile() {
                 if (!elements.contentArea) return;
 
-                const completedCount = Object.values(state.completed).filter(v => v).length;
-                const level = Math.floor(state.stars / 1000) + 1;
-                const progress = ((state.stars % 1000) / 1000) * 100;
+                const completedCount = getCompletedQuestsCount();
+                const level = Math.floor((state.stars || 0) / 1000) + 1;
+                const progress = ((state.stars || 0) % 1000 / 1000) * 100;
                 const userRank = getUserRank();
+
+                const botUsername = 'OKAYBot';
+                const referralLink = user ? `https://t.me/${botUsername}?start=ref_${user.id}` : 'https://t.me/OKAYBot';
 
                 let htmlString = `
                     <div class="content-card">
@@ -1279,29 +1768,56 @@
                             <div>
                                 <div style="font-size: 18px; font-weight: 600; color: #1c1c1e;">${user?.first_name || 'OKAY'} ${user?.last_name || ''}</div>
                                 <div style="color: #8e8e93; font-size: 13px;">${user?.username ? '@' + user.username : '@user'}</div>
-                                <div style="color: #a0a0a8; font-size: 12px; margin-top: 4px;">⭐️ с ${state.joinDate}</div>
+                                <div style="color: #a0a0a8; font-size: 12px; margin-top: 4px;">⭐️ с ${state.joinDate || 'сегодня'}</div>
                             </div>
                         </div>
 
                         <div class="stats-grid">
-                            <div class="stat-item"><div class="stat-value">${state.stars}</div><div class="stat-label">Баланс</div></div>
-                            <div class="stat-item"><div class="stat-value">${completedCount}</div><div class="stat-label">Заданий</div></div>
-                            <div class="stat-item"><div class="stat-value">${state.gameStats.wins}</div><div class="stat-label">Побед</div></div>
+                            <div class="stat-item"><div class="stat-value">${state.stars || 0}</div><div class="stat-label">Баланс</div></div>
+                            <div class="stat-item"><div class="stat-value">${completedCount}</div><div class="stat-label">Квестов</div></div>
+                            <div class="stat-item"><div class="stat-value">${state.gameStats.wins || 0}</div><div class="stat-label">Побед</div></div>
                             <div class="stat-item"><div class="stat-value">${level}</div><div class="stat-label">Уровень</div></div>
+                        </div>
+
+                        <div class="referral-card">
+                            <div class="referral-title">👥 Реферальная программа</div>
+
+                            <div class="referral-stats">
+                                <div class="referral-stat">
+                                    <div class="referral-stat-value">${state.referrals.count || 0}</div>
+                                    <div class="referral-stat-label">Приглашено</div>
+                                </div>
+                                <div class="referral-stat">
+                                    <div class="referral-stat-value">${state.referrals.earned || 0}</div>
+                                    <div class="referral-stat-label">⭐️ Заработано</div>
+                                </div>
+                            </div>
+
+                            <div class="referral-link-container">
+                                <input type="text" class="referral-link" id="referralLink" value="${referralLink}" readonly>
+                                <button class="copy-btn" id="copyReferralBtn" type="button">Копировать</button>
+                            </div>
+
+                            <button class="invite-btn" id="inviteFriendBtn" type="button">
+                                <span>📱</span> Пригласить друга
+                            </button>
+                            <div style="color: #8e8e93; font-size: 12px; margin-top: 12px;">
+                                За каждого друга вы получаете 100 ⭐️
+                            </div>
                         </div>
 
                         <div style="margin-top: 14px;">
                             <div style="display: flex; justify-content: space-between; color: #8e8e93; font-size: 13px;">
                                 <span>🔥 До следующего уровня</span>
-                                <span>${state.stars % 1000} / 1000 ⭐️</span>
+                                <span>${(state.stars || 0) % 1000} / 1000 ⭐️</span>
                             </div>
                             <div class="progress-bar"><div class="progress-fill" style="width: ${progress}%;"></div></div>
                         </div>
                 `;
 
                 if (userRank) {
-                    htmlString += `<div style="margin-top: 16px; padding: 12px; background: white; border-radius: 20px; display: flex; justify-content: space-between;">
-                        <span style="color: #8e8e93;">🏆 Место в топе</span>
+                    htmlString += `<div style="margin-top: 16px; padding: 12px; background: white; border-radius: 26px; display: flex; justify-content: space-between;">
+                        <span>🏆 Место в топе</span>
                         <span style="font-weight: 700;">#${userRank.rank} из ${userRank.total}</span>
                     </div>`;
                 }
@@ -1313,11 +1829,48 @@
 
                 elements.contentArea.innerHTML = htmlString;
 
-                // Обработчики
+                const copyBtn = document.getElementById('copyReferralBtn');
+                const inviteBtn = document.getElementById('inviteFriendBtn');
+                const referralInput = document.getElementById('referralLink');
+
+                if (copyBtn && referralInput) {
+                    copyBtn.onclick = () => {
+                        referralInput.select();
+                        document.execCommand('copy');
+
+                        copyBtn.textContent = 'Скопировано!';
+                        copyBtn.classList.add('copied');
+
+                        setTimeout(() => {
+                            copyBtn.textContent = 'Копировать';
+                            copyBtn.classList.remove('copied');
+                        }, 2000);
+
+                        if (tg && tg.HapticFeedback) {
+                            tg.HapticFeedback.notificationOccurred('success');
+                        }
+                    };
+                }
+
+                if (inviteBtn) {
+                    inviteBtn.onclick = () => {
+                        shareReferralLink();
+
+                        if (confirm('Добавить тестового реферала?')) {
+                            state.referrals.count = (state.referrals.count || 0) + 1;
+                            state.referrals.earned = (state.referrals.earned || 0) + 100;
+                            state.stars = (state.stars || 0) + 100;
+                            refreshUI();
+                            saveState();
+                            renderProfile();
+                        }
+                    };
+                }
+
                 const btns = document.querySelectorAll('.quest-btn');
                 if (btns.length >= 2) {
-                    btns[0].onclick = () => alert('🏆 Достижения:\n✓ Первые 100 ⭐️\n✓ 5 заданий\n✓ Первая победа');
-                    btns[1].onclick = () => alert(`📊 Статистика:\n💰 Баланс: ${state.stars} ⭐️\n📋 Заданий: ${completedCount}\n🎮 Игр: ${state.gameStats.gamesPlayed}\n🏆 Побед: ${state.gameStats.wins}`);
+                    btns[0].onclick = () => alert('🏆 Достижения:\n✓ Первые 100 ⭐️\n✓ 5 квестов\n✓ Первая победа\n✓ 3 реферала');
+                    btns[1].onclick = () => alert(`📊 Статистика:\n💰 Баланс: ${state.stars || 0} ⭐️\n📋 Квестов: ${completedCount}\n🎮 Игр: ${state.gameStats.gamesPlayed || 0}\n🏆 Побед: ${state.gameStats.wins || 0}\n👥 Рефералов: ${state.referrals.count || 0}`);
                 }
             }
 
@@ -1331,40 +1884,44 @@
                     <div class="content-card">
                         <h3 style="color: #1c1c1e; margin-bottom: 14px; font-weight: 600; font-size: 17px;">🏆 Топ пользователей</h3>
                         <div class="stats-info">
-                            <span>Всего: ${database.totalUsers}</span>
-                            <span>Всего ⭐️: ${database.totalStars}</span>
+                            <span>Всего: ${database.totalUsers || 0}</span>
+                            <span>Всего ⭐️: ${database.totalStars || 0}</span>
                         </div>
                         <div class="leaderboard-container">
                 `;
 
-                leaderboard.forEach((leader, index) => {
-                    const isCurrentUser = user && leader.id === user.id;
-                    const rankClass = index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : '';
+                if (leaderboard.length === 0) {
+                    htmlString += '<div style="text-align: center; padding: 20px; color: #8e8e93;">Пока нет пользователей</div>';
+                } else {
+                    leaderboard.forEach((leader, index) => {
+                        const isCurrentUser = user && leader.id === user.id;
+                        const rankClass = index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : '';
 
-                    htmlString += `
-                        <div class="leader-item ${isCurrentUser ? 'current-user' : ''}">
-                            <div class="leader-rank ${rankClass}">${leader.rank}</div>
-                            <div class="leader-avatar">
-                                ${leader.avatar ?
-                                    `<img src="${leader.avatar}" alt="User avatar">` :
-                                    `<div>${leader.name.charAt(0)}</div>`
-                                }
+                        htmlString += `
+                            <div class="leader-item ${isCurrentUser ? 'current-user' : ''}">
+                                <div class="leader-rank ${rankClass}">${leader.rank}</div>
+                                <div class="leader-avatar">
+                                    ${leader.avatar ?
+                                        `<img src="${leader.avatar}" alt="User avatar">` :
+                                        `<div>${(leader.name || 'U').charAt(0)}</div>`
+                                    }
+                                </div>
+                                <div class="leader-info">
+                                    <div class="leader-name">${leader.name || 'User'}${isCurrentUser ? '<span class="leader-badge">Вы</span>' : ''}</div>
+                                    <div class="leader-username">@${leader.username || 'user'}</div>
+                                </div>
+                                <div class="leader-stars"><span>${leader.stars || 0}</span><span>⭐️</span></div>
                             </div>
-                            <div class="leader-info">
-                                <div class="leader-name">${leader.name}${isCurrentUser ? '<span class="leader-badge">Вы</span>' : ''}</div>
-                                <div class="leader-username">@${leader.username}</div>
-                            </div>
-                            <div class="leader-stars"><span>${leader.stars}</span><span>⭐️</span></div>
-                        </div>
-                    `;
-                });
+                        `;
+                    });
+                }
 
                 htmlString += `</div>`;
 
                 if (userRank) {
-                    htmlString += `<div style="margin-top: 16px; padding: 12px; background: white; border-radius: 20px; text-align: center;">
+                    htmlString += `<div style="margin-top: 16px; padding: 12px; background: white; border-radius: 26px; text-align: center;">
                         <span>Ваше место: </span><span style="font-weight: 700;">#${userRank.rank} из ${userRank.total}</span>
-                        <span style="margin-left: 8px;">(${userRank.stars} ⭐️)</span>
+                        <span style="margin-left: 8px;">(${userRank.stars || 0} ⭐️)</span>
                     </div>`;
                 }
 
@@ -1376,14 +1933,14 @@
                 if (!elements.contentArea) return;
 
                 const minWithdraw = 1000;
-                const canWithdraw = state.stars >= minWithdraw;
+                const canWithdraw = (state.stars || 0) >= minWithdraw;
 
                 let withdrawalsHtml = '';
-                if (state.withdrawals.length > 0) {
+                if (state.withdrawals && state.withdrawals.length > 0) {
                     withdrawalsHtml = state.withdrawals.slice(-3).reverse().map(w =>
                         `<div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                            <span>💰 ${w.amount} ⭐️</span>
-                            <span>${w.date}</span>
+                            <span>💰 ${w.amount || 0} ⭐️</span>
+                            <span>${w.date || ''}</span>
                         </div>`
                     ).join('');
                 } else {
@@ -1394,12 +1951,12 @@
                     <div class="content-card">
                         <div class="balance-container">
                             <div style="color: #8e8e93; font-size: 16px;">Текущий баланс</div>
-                            <div class="balance-big">${state.stars} <span>⭐️</span></div>
+                            <div class="balance-big">${state.stars || 0} <span>⭐️</span></div>
                             <button class="withdraw-btn" ${!canWithdraw ? 'disabled' : ''} type="button">
-                                ${canWithdraw ? '💰 Вывести' : `Нужно ещё ${minWithdraw - state.stars} ⭐️`}
+                                ${canWithdraw ? '💰 Вывести' : `Нужно ещё ${minWithdraw - (state.stars || 0)} ⭐️`}
                             </button>
                             <div class="min-withdraw">Минимальный вывод: ${minWithdraw} ⭐️</div>
-                            <div style="margin-top: 24px; padding: 16px; background: #f8f8fa; border-radius: 20px; text-align: left;">
+                            <div style="margin-top: 24px; padding: 16px; background: #f8f8fa; border-radius: 26px; text-align: left;">
                                 <div style="font-weight: 600; margin-bottom: 12px;">📊 История выводов</div>
                                 ${withdrawalsHtml}
                             </div>
@@ -1415,6 +1972,37 @@
                 }
             }
 
+            function withdraw() {
+                const minWithdraw = 1000;
+                const currentStars = state.stars || 0;
+
+                if (currentStars < minWithdraw) {
+                    alert(`❌ Нужно минимум ${minWithdraw} ⭐️`);
+                    return;
+                }
+
+                const amount = Math.floor(currentStars / 100) * 100;
+
+                if (confirm(`Вывести ${amount} ⭐️?\n\nСредства поступят в течение 24 часов.`)) {
+                    state.stars = currentStars - amount;
+
+                    if (!state.withdrawals) state.withdrawals = [];
+                    state.withdrawals.push({
+                        amount: amount,
+                        date: new Date().toLocaleDateString('ru-RU')
+                    });
+
+                    refreshUI();
+                    saveState();
+                    renderBalance();
+
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.notificationOccurred('success');
+                    }
+                    alert(`✅ Заявка на вывод ${amount} ⭐️ создана!`);
+                }
+            }
+
             function renderHelp() {
                 if (!elements.contentArea) return;
 
@@ -1423,7 +2011,7 @@
                         <div class="help-container">
                             <div class="help-icon">❓</div>
                             <div class="help-title">Нужна помощь?</div>
-                            <div class="help-description">Мы всегда готовы помочь! Свяжитесь с менеджером</div>
+                            <div class="help-description">Свяжитесь с нашим менеджером — он ответит на все вопросы</div>
                             <div class="manager-card">
                                 <div class="manager-avatar">👨‍💼</div>
                                 <div class="manager-name">Менеджер OKAY</div>
@@ -1432,23 +2020,10 @@
                                     <span>📱</span> <span>Написать менеджеру</span>
                                 </button>
                             </div>
-                            <div class="faq-section">
-                                <div class="faq-title">❓ Часто задаваемые вопросы</div>
-                                <div class="faq-item">
-                                    <div class="faq-question"><span>❓</span> Как зарабатывать звезды?</div>
-                                    <div class="faq-answer">Выполняйте ежедневные задания и играйте в игру.</div>
-                                </div>
-                                <div class="faq-item">
-                                    <div class="faq-question"><span>💰</span> Как вывести звезды?</div>
-                                    <div class="faq-answer">Накопите 1000 ⭐️ и нажмите "Вывести" в разделе Баланс.</div>
-                                </div>
-                                <div class="faq-item">
-                                    <div class="faq-question"><span>🏆</span> Как попасть в топ?</div>
-                                    <div class="faq-answer">Зарабатывайте больше звезд! Топ обновляется автоматически.</div>
-                                </div>
-                                <div class="faq-item">
-                                    <div class="faq-question"><span>🎮</span> Как работает игра?</div>
-                                    <div class="faq-answer">Бросьте кубик за 50 ⭐️. Шанс выигрыша 50%. Можно выиграть 100 или 200 ⭐️!</div>
+                            <div style="margin-top: 24px; padding: 16px; background: #f8f8fa; border-radius: 26px;">
+                                <div style="display: flex; align-items: center; gap: 12px; color: #8e8e93; font-size: 14px;">
+                                    <span>⏰</span>
+                                    <span>Обычно отвечаем в течение 5-10 минут</span>
                                 </div>
                             </div>
                         </div>
@@ -1461,146 +2036,14 @@
                 if (contactBtn) {
                     contactBtn.onclick = () => {
                         window.open('https://t.me/OKAYPROJECTMANAGER', '_blank');
-                        if (tg) tg.HapticFeedback?.selectionChanged();
+                        if (tg && tg.HapticFeedback) {
+                            tg.HapticFeedback.selectionChanged();
+                        }
                     };
                 }
             }
 
-            // Действия
-            function completeQuest(questId, reward, btnElement) {
-                if (state.completed[questId]) return;
-
-                animateStars(reward, btnElement);
-
-                state.stars += reward;
-                state.completed[questId] = true;
-
-                refreshUI();
-                saveState();
-
-                const questElement = document.getElementById(questId);
-                if (questElement) {
-                    questElement.classList.add('completed');
-                    const questBtn = questElement.querySelector('.quest-btn');
-                    if (questBtn) {
-                        questBtn.textContent = '✅ Готово';
-                        questBtn.classList.add('completed');
-                    }
-                }
-
-                if (tg) tg.HapticFeedback?.notificationOccurred('success');
-            }
-
-            function playGame() {
-                const cost = 50;
-                const gameBtn = document.getElementById('playGameBtn');
-
-                if (state.stars < cost) {
-                    const gameResult = document.getElementById('gameResult');
-                    const gameEmoji = document.getElementById('gameEmoji');
-                    if (gameResult && gameEmoji) {
-                        gameResult.textContent = '❌ Недостаточно';
-                        gameEmoji.textContent = '😢';
-                        gameEmoji.classList.add('lose');
-
-                        setTimeout(() => {
-                            gameEmoji.textContent = '🎲';
-                            gameEmoji.classList.remove('lose');
-                            gameResult.textContent = 'Нажми, чтобы сыграть';
-                        }, 1500);
-                    }
-                    return;
-                }
-
-                animateStars(-cost, gameBtn);
-
-                state.stars -= cost;
-                state.gameStats.gamesPlayed++;
-
-                const isWin = Math.random() > 0.5;
-
-                if (isWin) {
-                    const winAmount = Math.random() > 0.3 ? 100 : 200;
-                    state.stars += winAmount;
-                    state.gameStats.wins++;
-
-                    if (winAmount > state.gameStats.maxWin) {
-                        state.gameStats.maxWin = winAmount;
-                    }
-
-                    animateStars(winAmount, gameBtn);
-
-                    const gameEmoji = document.getElementById('gameEmoji');
-                    const gameResult = document.getElementById('gameResult');
-                    if (gameEmoji && gameResult) {
-                        gameEmoji.textContent = '🎉';
-                        gameEmoji.classList.add('win');
-                        gameResult.textContent = `+${winAmount} ⭐️`;
-                    }
-
-                    if (tg) tg.HapticFeedback?.notificationOccurred('success');
-                } else {
-                    const gameEmoji = document.getElementById('gameEmoji');
-                    const gameResult = document.getElementById('gameResult');
-                    if (gameEmoji && gameResult) {
-                        gameEmoji.textContent = '😢';
-                        gameEmoji.classList.add('lose');
-                        gameResult.textContent = '😢 Повезёт в следующий раз';
-                    }
-
-                    if (tg) tg.HapticFeedback?.notificationOccurred('error');
-                }
-
-                refreshUI();
-                saveState();
-
-                // Обновляем статистику
-                const maxWinEl = document.getElementById('maxWin');
-                const gamesPlayedEl = document.getElementById('gamesPlayed');
-                const gameWinsEl = document.getElementById('gameWins');
-
-                if (maxWinEl) maxWinEl.textContent = state.gameStats.maxWin + ' ⭐️';
-                if (gamesPlayedEl) gamesPlayedEl.textContent = state.gameStats.gamesPlayed;
-                if (gameWinsEl) gameWinsEl.textContent = state.gameStats.wins;
-
-                setTimeout(() => {
-                    const gameEmoji = document.getElementById('gameEmoji');
-                    const gameResult = document.getElementById('gameResult');
-                    if (gameEmoji && gameResult && !gameEmoji.classList.contains('win')) {
-                        gameEmoji.textContent = '🎲';
-                        gameEmoji.classList.remove('win', 'lose');
-                        gameResult.textContent = 'Нажми, чтобы сыграть';
-                    }
-                }, 2000);
-            }
-
-            function withdraw() {
-                const minWithdraw = 1000;
-
-                if (state.stars < minWithdraw) {
-                    alert(`❌ Нужно минимум ${minWithdraw} ⭐️`);
-                    return;
-                }
-
-                const amount = Math.floor(state.stars / 100) * 100;
-
-                if (confirm(`Вывести ${amount} ⭐️?\n\nСредства поступят в течение 24 часов.`)) {
-                    state.stars -= amount;
-                    state.withdrawals.push({
-                        amount: amount,
-                        date: new Date().toLocaleDateString('ru-RU')
-                    });
-
-                    refreshUI();
-                    saveState();
-                    renderBalance();
-
-                    if (tg) tg.HapticFeedback?.notificationOccurred('success');
-                    alert(`✅ Заявка на вывод ${amount} ⭐️ создана!`);
-                }
-            }
-
-            // Навигация
+            // ===== НАВИГАЦИЯ =====
             function setActiveNav(activeId) {
                 Object.values(navItems).forEach(item => {
                     if (item) item.classList.remove('active');
@@ -1636,14 +2079,16 @@
                 };
             }
 
-            // Инициализация
+            // ===== ИНИЦИАЛИЗАЦИЯ =====
             updateUserInfo();
             refreshUI();
             renderQuests();
 
-            if (user) {
+            if (user && user.id) {
                 updateUserInDatabase();
             }
+
+            setInterval(checkQuestReset, 60000);
         })();
     </script>
 </body>
