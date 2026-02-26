@@ -3,60 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>OKAY · Glass</title>
+    <title>OKAY · Звёзды</title>
     <style>
-        /* Сброс стилей */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
-            font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background: #f2f2f7;
+            background: #f5f5f7;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 0;
+            margin: 0;
             overflow-x: hidden;
-            transition: background-color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
 
-        /* Темная тема */
-        body.dark-theme {
-            background: #000000;
-        }
-
-        /* Основной контейнер с эффектом стекла */
         .phone-frame {
+            max-width: 100%;
             width: 100%;
-            max-width: 390px;
             min-height: 100vh;
+            background: #ffffff;
+            box-shadow: none;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 16px 14px 24px;
+            padding: 16px 14px 20px;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
             position: relative;
+            animation: frameAppear 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
             display: flex;
             flex-direction: column;
-            -webkit-overflow-scrolling: touch;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-left: 1px solid rgba(0, 0, 0, 0.05);
-            border-right: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        body.dark-theme .phone-frame {
-            background: rgba(0, 0, 0, 0.7);
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        @keyframes frameAppear {
+            0% { opacity: 0; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1); }
         }
 
-        /* Контейнер для анимаций */
-        #animations {
+        #animation-container {
             position: fixed;
             top: 0;
             left: 0;
@@ -66,741 +58,447 @@
             z-index: 9999;
         }
 
-        /* Статус бар */
         .status-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 8px 0 16px;
+            color: #8e8e93;
             font-size: 15px;
             font-weight: 500;
-            letter-spacing: -0.02em;
-            opacity: 0;
-            transform: translateY(-10px);
-            animation: slideDown 0.4s ease forwards;
+            animation: fadeSlide 0.5s ease forwards;
         }
 
-        @keyframes slideDown {
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         .okay-badge {
             display: flex;
             align-items: center;
             gap: 6px;
-            background: rgba(0, 0, 0, 0.03);
+            background: #f2f2f7;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1c1c1e;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-size: 15px;
-            font-weight: 600;
-            color: #000000;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            transition: all 0.2s ease;
         }
 
-        body.dark-theme .okay-badge {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.2);
+        .okay-badge:active {
+            transform: scale(0.95) translateY(2px);
+            background: #e8e8ed;
         }
 
         .time {
-            background: rgba(0, 0, 0, 0.03);
+            color: #8e8e93;
+            font-size: 14px;
+            background: #f2f2f7;
+            padding: 6px 14px;
+            border-radius: 30px;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            padding: 8px 18px;
-            border-radius: 40px;
-            color: #000000;
-            font-size: 15px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            transition: all 0.2s ease;
         }
 
-        body.dark-theme .time {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Баланс */
-        .balance-card {
+        .top-balance {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 14px 20px;
-            border-radius: 36px;
+            background: rgba(248, 248, 250, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 14px 18px;
+            border-radius: 30px;
             margin-bottom: 16px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            transform: translateY(0);
-            opacity: 0;
-            animation: fadeInUp 0.5s ease 0.1s forwards;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            animation: slideScale 0.5s ease-out forwards;
+            transform: translateZ(0);
+            will-change: transform;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
         }
 
-        body.dark-theme .balance-card {
-            background: rgba(0, 0, 0, 0.6);
-            border-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        .top-balance:active {
+            transform: scale(0.98) translateY(2px);
+            background: rgba(240, 240, 245, 0.9);
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideScale {
+            0% { opacity: 0; transform: translateY(-15px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .balance-label {
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #000000;
+            color: #1c1c1e;
             font-weight: 600;
-            font-size: 17px;
-        }
-
-        body.dark-theme .balance-label {
-            color: #ffffff;
+            font-size: 16px;
         }
 
         .balance-amount {
             display: flex;
             align-items: center;
             gap: 4px;
-            background: #ffffff;
+            background: white;
             padding: 8px 22px;
-            border-radius: 40px;
-            font-weight: 700;
-            font-size: 24px;
-            color: #000000;
-            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        body.dark-theme .balance-amount {
-            background: #1c1c1e;
-            color: #ffffff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .balance-amount.pop {
-            transform: scale(1.05);
-            background: #e5e5ea;
-        }
-
-        body.dark-theme .balance-amount.pop {
-            background: #2c2c2e;
-        }
-
-        /* Профиль */
-        .profile-card {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 16px 18px;
-            border-radius: 36px;
-            margin-bottom: 16px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1);
-            opacity: 0;
-            animation: fadeInUp 0.5s ease 0.2s forwards;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-        }
-
-        body.dark-theme .profile-card {
-            background: rgba(0, 0, 0, 0.6);
-            border-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-        }
-
-        .profile-card:active {
-            transform: scale(0.98);
-            background: rgba(255, 255, 255, 0.9);
-        }
-
-        body.dark-theme .profile-card:active {
-            background: rgba(0, 0, 0, 0.7);
-        }
-
-        .avatar {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            flex-shrink: 0;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            transition: border-color 0.2s ease;
-        }
-
-        body.dark-theme .avatar {
-            border-color: rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .avatar-placeholder {
-            font-size: 28px;
-            color: #000000;
-        }
-
-        body.dark-theme .avatar-placeholder {
-            color: #ffffff;
-        }
-
-        .profile-info {
-            flex: 1;
-        }
-
-        .name-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 4px;
-        }
-
-        .profile-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: #000000;
-        }
-
-        body.dark-theme .profile-name {
-            color: #ffffff;
-        }
-
-        .username {
-            font-size: 14px;
-            color: #8e8e93;
-        }
-
-        .badge {
-            background: rgba(0, 0, 0, 0.05);
-            color: #000000;
-            font-size: 11px;
-            padding: 4px 12px;
             border-radius: 30px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            font-weight: 700;
+            font-size: 22px;
+            color: #1c1c1e;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+            transform: translateZ(0);
+            will-change: transform, background;
         }
 
-        body.dark-theme .badge {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.2);
+        .balance-amount span:last-child {
+            font-size: 20px;
+            margin-left: 2px;
+            transition: transform 0.3s ease;
         }
 
-        .badge.premium {
-            background: #000000;
-            color: #ffffff;
-            border-color: #000000;
+        .balance-amount:hover span:last-child {
+            transform: rotate(10deg) scale(1.1);
         }
 
-        body.dark-theme .badge.premium {
-            background: #ffffff;
-            color: #000000;
-            border-color: #ffffff;
+        .star-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            font-size: 24px;
+            will-change: transform, opacity;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+            animation: starFlyNew 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform: translateZ(0);
+            --x-20: 0px;
+            --y-20: 0px;
+            --x-50: 0px;
+            --y-50: 0px;
+            --x-80: 0px;
+            --y-80: 0px;
+            --x-final: 0px;
+            --y-final: 0px;
         }
 
-        /* Карточки контента */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 32px;
-            padding: 20px 18px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
+        @keyframes starFlyNew {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+            25% {
+                opacity: 1;
+                transform: translate(var(--x-20), var(--y-20)) scale(1.4) rotate(15deg);
+            }
+            50% {
+                opacity: 0.9;
+                transform: translate(var(--x-50), var(--y-50)) scale(1.8) rotate(30deg);
+            }
+            75% {
+                opacity: 0.5;
+                transform: translate(var(--x-80), var(--y-80)) scale(1.2) rotate(15deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--x-final), var(--y-final)) scale(0.3) rotate(0deg);
+            }
+        }
+
+        .balance-highlight {
+            animation: balancePulse 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
+        }
+
+        @keyframes balancePulse {
+            0%, 100% {
+                background: white;
+                transform: scale(1);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            }
+            30% {
+                background: #1c1c1e;
+                color: white;
+                transform: scale(1.1);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            }
+            60% {
+                transform: scale(1.05);
+            }
+        }
+
+        .content-card {
+            background: rgba(248, 248, 250, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 18px 14px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            animation: cardScale 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
             margin-bottom: 16px;
-            transform: translateY(0);
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-            opacity: 0;
-            animation: fadeInUp 0.5s ease 0.3s forwards;
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.05);
+            transform: translateZ(0);
+            will-change: transform, opacity;
         }
 
-        body.dark-theme .glass-card {
-            background: rgba(0, 0, 0, 0.5);
-            border-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+        @keyframes cardScale {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        /* Вкладки квестов */
         .quests-tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 18px;
+            gap: 8px;
+            margin-bottom: 16px;
         }
 
-        .tab {
+        .quest-tab {
             flex: 1;
-            background: rgba(0, 0, 0, 0.03);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            padding: 12px 8px;
-            border-radius: 34px;
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            padding: 12px 10px;
+            border-radius: 30px;
             font-weight: 600;
             font-size: 15px;
             color: #8e8e93;
             cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
             text-align: center;
-            transition: all 0.2s ease;
+            transform: translateZ(0);
+            will-change: transform, background, color;
         }
 
-        body.dark-theme .tab {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.1);
-            color: #98989e;
+        .quest-tab.active {
+            background: #1c1c1e;
+            color: white;
+            transform: scale(1.02) translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .tab.active {
-            background: #000000;
-            color: #ffffff;
-            border-color: #000000;
-            transform: scale(1.02);
+        .quest-tab:active {
+            transform: scale(0.96) translateY(2px);
         }
 
-        body.dark-theme .tab.active {
-            background: #ffffff;
-            color: #000000;
-            border-color: #ffffff;
+        .quest-section {
+            display: block;
+            animation: sectionSlide 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
         }
 
-        /* Элементы квестов */
+        .quest-section.hidden {
+            display: none;
+        }
+
+        @keyframes sectionSlide {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
         .quest-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            padding: 14px 16px;
-            border-radius: 28px;
+            background: white;
+            padding: 14px;
+            border-radius: 26px;
             margin-bottom: 10px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1);
-            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+            animation: questPop 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+            transform: translateZ(0);
+            will-change: transform, opacity;
         }
 
-        body.dark-theme .quest-item {
-            background: rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.1);
+        .quest-item:nth-child(2) { animation-delay: 0.05s; }
+        .quest-item:nth-child(3) { animation-delay: 0.1s; }
+        .quest-item:nth-child(4) { animation-delay: 0.15s; }
+
+        .quest-item:active {
+            transform: scale(0.97) translateY(2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
         }
 
-        .quest-item:hover {
-            transform: translateX(4px);
-            background: rgba(255, 255, 255, 0.7);
+        @keyframes questPop {
+            from { opacity: 0; transform: scale(0.9) translateX(-10px); }
+            to { opacity: 1; transform: scale(1) translateX(0); }
         }
 
-        body.dark-theme .quest-item:hover {
-            background: rgba(0, 0, 0, 0.4);
+        .quest-item.completed {
+            opacity: 0.6;
+            background: #f2f2f7;
+            pointer-events: none;
+            transform: scale(0.98);
         }
 
         .quest-info {
-            font-size: 14px;
-            color: #000000;
-            font-weight: 500;
+            flex: 1;
+            min-width: 0;
+            cursor: pointer;
         }
 
-        body.dark-theme .quest-info {
-            color: #ffffff;
+        .quest-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1c1c1e;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.2s ease;
+        }
+
+        .quest-title.link:hover {
+            color: #0066cc;
+            text-decoration: underline;
         }
 
         .quest-reward {
-            font-size: 12px;
-            color: #8e8e93;
-            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #5c5c66;
+            font-weight: 500;
+            font-size: 13px;
         }
 
         .quest-btn {
-            background: #ffffff;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            color: #000000;
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            color: #1c1c1e;
             font-weight: 600;
-            padding: 10px 22px;
-            border-radius: 32px;
+            padding: 8px 18px;
+            border-radius: 30px;
             font-size: 13px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
             cursor: pointer;
-            transition: all 0.15s cubic-bezier(0.2, 0.9, 0.4, 1);
-            min-width: 90px;
+            flex-shrink: 0;
+            transform: translateZ(0);
+            will-change: transform;
         }
 
-        body.dark-theme .quest-btn {
-            background: #1c1c1e;
-            color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .quest-btn:not(.completed):active {
-            transform: scale(0.92);
-            background: #000000;
-            color: #ffffff;
-        }
-
-        body.dark-theme .quest-btn:not(.completed):active {
-            background: #ffffff;
-            color: #000000;
+        .quest-btn:active {
+            transform: scale(0.9) translateY(2px);
+            background: #f8f8fa;
         }
 
         .quest-btn.completed {
-            background: rgba(0, 0, 0, 0.05);
+            background: #e8e8ed;
             color: #8e8e93;
-            border-color: rgba(0, 0, 0, 0.05);
             pointer-events: none;
         }
 
-        body.dark-theme .quest-btn.completed {
-            background: rgba(255, 255, 255, 0.1);
-            color: #98989e;
-            border-color: rgba(255, 255, 255, 0.05);
-        }
-
-        .quest-btn.checking {
-            background: #8e8e93;
-            color: #ffffff;
-            pointer-events: none;
-        }
-
-        /* Таймер */
         .reset-timer {
             text-align: center;
             margin-top: 16px;
-            padding: 14px;
-            background: rgba(0, 0, 0, 0.03);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 28px;
-            color: #8e8e93;
-            font-size: 13px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        body.dark-theme .reset-timer {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.1);
-            color: #98989e;
-        }
-
-        /* Сетка статистики */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .stat-item {
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 24px;
-            padding: 16px 4px;
-            text-align: center;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease;
-        }
-
-        body.dark-theme .stat-item {
-            background: rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .stat-item:hover {
-            transform: translateY(-2px);
-        }
-
-        .stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #000000;
-            margin-bottom: 4px;
-        }
-
-        body.dark-theme .stat-value {
-            color: #ffffff;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: #8e8e93;
-        }
-
-        /* Прогресс бар */
-        .progress-container {
-            margin: 20px 0;
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #8e8e93;
-            margin-bottom: 8px;
-        }
-
-        .progress-bg {
-            background: rgba(0, 0, 0, 0.1);
-            height: 8px;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-        body.dark-theme .progress-bg {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: #000000;
-            border-radius: 20px;
-            transition: width 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-        }
-
-        body.dark-theme .progress-fill {
-            background: #ffffff;
-        }
-
-        /* Premium карточка */
-        .premium-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 36px;
-            padding: 24px 20px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            text-align: center;
-            transition: transform 0.2s ease;
-        }
-
-        body.dark-theme .premium-card {
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .premium-badge {
-            background: #000000;
-            color: #ffffff;
-            padding: 6px 16px;
-            border-radius: 40px;
-            font-weight: 700;
-            font-size: 13px;
-            display: inline-block;
-            margin-bottom: 16px;
-        }
-
-        body.dark-theme .premium-badge {
-            background: #ffffff;
-            color: #000000;
-        }
-
-        .premium-feature {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            padding: 12px;
+            background: white;
             border-radius: 26px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            color: #000000;
-        }
-
-        body.dark-theme .premium-feature {
-            background: rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-        }
-
-        .premium-price {
-            font-size: 36px;
-            font-weight: 800;
-            margin: 20px 0;
-            color: #000000;
-        }
-
-        body.dark-theme .premium-price {
-            color: #ffffff;
-        }
-
-        .premium-btn {
-            background: #000000;
-            color: #ffffff;
-            border: none;
-            padding: 16px 32px;
-            border-radius: 46px;
-            font-size: 18px;
-            font-weight: 700;
-            width: 100%;
-            cursor: pointer;
-            transition: all 0.15s cubic-bezier(0.2, 0.9, 0.4, 1);
-        }
-
-        body.dark-theme .premium-btn {
-            background: #ffffff;
-            color: #000000;
-        }
-
-        .premium-btn:active {
-            transform: scale(0.96);
-            opacity: 0.9;
-        }
-
-        .premium-btn.loading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        /* Вывод средств */
-        .withdraw-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 36px;
-            padding: 24px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        body.dark-theme .withdraw-card {
-            background: rgba(0, 0, 0, 0.5);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .withdraw-amount {
-            font-size: 52px;
-            font-weight: 800;
-            margin: 20px 0;
-            color: #000000;
-        }
-
-        body.dark-theme .withdraw-amount {
-            color: #ffffff;
-        }
-
-        .withdraw-min {
-            font-size: 14px;
             color: #8e8e93;
-            margin-bottom: 24px;
+            font-size: 13px;
+            animation: softPulse 2s ease-in-out infinite;
         }
 
-        .withdraw-input {
-            width: 100%;
-            padding: 18px;
-            background: #ffffff;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 40px;
-            font-size: 20px;
+        @keyframes softPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(0.99); }
+        }
+
+        .balance-container {
             text-align: center;
-            margin-bottom: 16px;
-            color: #000000;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            padding: 24px;
+            background: white;
+            border-radius: 30px;
+            margin: 16px 0;
         }
 
-        body.dark-theme .withdraw-input {
-            background: #1c1c1e;
-            border-color: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
+        .balance-big {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin: 16px 0;
+            animation: float 3s ease-in-out infinite;
         }
 
-        .withdraw-input:focus {
-            outline: none;
-            border-color: #000000;
-            transform: scale(1.02);
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
 
-        body.dark-theme .withdraw-input:focus {
-            border-color: #ffffff;
+        .balance-big span {
+            font-size: 40px;
+            margin-left: 8px;
+            display: inline-block;
+            animation: rotate 4s ease-in-out infinite;
+        }
+
+        @keyframes rotate {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
         }
 
         .withdraw-btn {
-            background: #000000;
-            color: #ffffff;
+            background: #1c1c1e;
+            color: white;
             border: none;
-            padding: 18px;
-            border-radius: 46px;
+            padding: 18px 32px;
+            border-radius: 40px;
             font-size: 18px;
-            font-weight: 700;
+            font-weight: 600;
             width: 100%;
             cursor: pointer;
-            transition: all 0.15s cubic-bezier(0.2, 0.9, 0.4, 1);
-            margin-bottom: 20px;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+            margin: 16px 0;
+            transform: translateZ(0);
+            will-change: transform, box-shadow;
+            box-shadow: 0 4px 15px rgba(28, 28, 30, 0.1);
         }
 
-        body.dark-theme .withdraw-btn {
-            background: #ffffff;
-            color: #000000;
-        }
-
-        .withdraw-btn:not(:disabled):active {
-            transform: scale(0.96);
-            opacity: 0.9;
+        .withdraw-btn:active {
+            transform: scale(0.96) translateY(3px);
+            box-shadow: 0 2px 8px rgba(28, 28, 30, 0.1);
         }
 
         .withdraw-btn:disabled {
-            background: #e5e5ea;
+            background: #e8e8ed;
             color: #8e8e93;
             pointer-events: none;
+            opacity: 0.7;
+            transform: scale(0.98);
         }
 
-        body.dark-theme .withdraw-btn:disabled {
-            background: #2c2c2e;
+        .min-withdraw {
             color: #8e8e93;
+            font-size: 14px;
+            margin-top: 8px;
         }
 
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            color: #000000;
-            font-size: 13px;
-        }
-
-        body.dark-theme .history-item {
-            border-color: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-        }
-
-        /* Нижняя навигация */
         .bottom-nav {
             display: flex;
             justify-content: space-around;
             align-items: center;
             margin-top: auto;
-            padding: 8px 6px;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 44px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            gap: 4px;
+            padding: 8px 4px;
+            background: rgba(248, 248, 250, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 40px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            animation: navSlide 0.5s ease-out 0.2s forwards;
+            gap: 2px;
             position: sticky;
             bottom: 10px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideUp 0.5s ease 0.4s forwards;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            flex-wrap: wrap;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            margin-bottom: env(safe-area-inset-bottom);
         }
 
-        body.dark-theme .bottom-nav {
-            background: rgba(0, 0, 0, 0.7);
-            border-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        @keyframes slideUp {
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes navSlide {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .nav-item {
@@ -809,107 +507,106 @@
             align-items: center;
             gap: 2px;
             padding: 8px 0;
-            border-radius: 36px;
+            border-radius: 30px;
             cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
             color: #8e8e93;
-            font-size: 11px;
+            font-size: 10px;
+            font-weight: 500;
             background: transparent;
             border: none;
             flex: 1;
-            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1);
-        }
-
-        body.dark-theme .nav-item {
-            color: #98989e;
-        }
-
-        .nav-item.active {
-            color: #000000;
-            background: rgba(0, 0, 0, 0.05);
-            transform: translateY(-2px);
-        }
-
-        body.dark-theme .nav-item.active {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.1);
+            min-width: 45px;
+            transform: translateZ(0);
+            will-change: transform, color, background;
         }
 
         .nav-item:active {
-            transform: scale(0.92);
+            transform: scale(0.92) translateY(2px);
+        }
+
+        .nav-item.active {
+            color: #1c1c1e;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            transform: scale(1.05) translateY(-2px);
         }
 
         .nav-item span:first-child {
-            font-size: 22px;
-            margin-bottom: 2px;
+            font-size: 20px;
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
         }
 
-        /* Анимация звезд */
-        .star-particle {
-            position: fixed;
-            pointer-events: none;
-            z-index: 10000;
-            font-size: 28px;
-            filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.3));
-            animation: starFloat 1.2s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
-            --x: 0px;
-            --y: 0px;
+        .nav-item.active span:first-child {
+            transform: translateY(-3px) scale(1.1);
         }
 
-        body.dark-theme .star-particle {
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+        .nav-item span:last-child {
+            font-size: 9px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            padding: 0 2px;
+            font-weight: 600;
         }
 
-        @keyframes starFloat {
-            0% { opacity: 1; transform: translate(0,0) scale(1) rotate(0deg); }
-            30% { opacity: 1; transform: translate(calc(var(--x)*0.3), calc(var(--y)*0.3 - 30px)) scale(1.2) rotate(10deg); }
-            70% { opacity: 0.8; transform: translate(calc(var(--x)*0.7), calc(var(--y)*0.7 - 50px)) scale(1.1) rotate(-5deg); }
-            100% { opacity: 0; transform: translate(var(--x), calc(var(--y) - 70px)) scale(0.8) rotate(0deg); }
+        .hidden {
+            display: none !important;
         }
 
-        .hidden { display: none !important; }
+        @supports (padding: max(0px)) {
+            .phone-frame {
+                padding-left: max(14px, env(safe-area-inset-left));
+                padding-right: max(14px, env(safe-area-inset-right));
+                padding-bottom: max(20px, env(safe-area-inset-bottom));
+                padding-top: max(16px, env(safe-area-inset-top));
+            }
+
+            .bottom-nav {
+                margin-bottom: max(0px, env(safe-area-inset-bottom));
+            }
+        }
     </style>
 </head>
-<body class="light-theme">
-    <div id="animations"></div>
+<body>
+    <div id="animation-container"></div>
+
     <div class="phone-frame" id="app">
-        <!-- Статус бар -->
         <div class="status-bar">
-            <div class="okay-badge">⚡️ OKAY</div>
+            <div class="okay-badge">
+                <span>⚡️</span>
+                <span>OKAY</span>
+            </div>
             <div class="time" id="currentTime">15:30</div>
         </div>
 
-        <!-- Баланс -->
-        <div class="balance-card">
-            <div class="balance-label">💰 Баланс</div>
-            <div class="balance-amount" id="balanceAmount">
-                <span id="starBalance">0</span>⭐️
+        <div class="top-balance">
+            <div class="balance-label">
+                <span>💰</span>
+                <span>Баланс</span>
+            </div>
+            <div class="balance-amount" id="topBalance">
+                <span id="starBalance">0</span>
+                <span>⭐️</span>
             </div>
         </div>
 
-        <!-- Профиль -->
-        <div class="profile-card" id="profileHeader">
-            <div class="avatar">
-                <div class="avatar-placeholder" id="avatarPlaceholder">👤</div>
-                <img id="avatarImage" src="" alt="" style="display:none; width:100%; height:100%; object-fit:cover;">
-            </div>
-            <div class="profile-info">
-                <div class="name-row">
-                    <span class="profile-name" id="userName">Загрузка...</span>
-                    <span class="badge" id="userBadge">MEMBER</span>
-                </div>
-                <div class="username" id="userUsername">@loading</div>
-            </div>
-        </div>
-
-        <!-- Контент -->
         <div id="contentArea"></div>
 
-        <!-- Навигация -->
         <div class="bottom-nav">
-            <button class="nav-item active" id="navQuests"><span>📋</span><span>Квесты</span></button>
-            <button class="nav-item" id="navProfile"><span>👤</span><span>Профиль</span></button>
-            <button class="nav-item" id="navPremium"><span>💎</span><span>Premium</span></button>
-            <button class="nav-item" id="navWithdraw"><span>💸</span><span>Вывод</span></button>
+            <button class="nav-item active" id="navQuests" type="button">
+                <span>📋</span>
+                <span>Квесты</span>
+            </button>
+            <button class="nav-item" id="navWithdraw" type="button">
+                <span>💰</span>
+                <span>Вывод</span>
+            </button>
+            <button class="nav-item" id="navHelp" type="button">
+                <span>❓</span>
+                <span>Помощь</span>
+            </button>
         </div>
     </div>
 
@@ -918,695 +615,690 @@
         (function() {
             'use strict';
 
-            // Инициализация Telegram
+            if ('virtualKeyboard' in navigator) {
+                navigator.virtualKeyboard.overlaysContent = true;
+            }
+
+            // Telegram WebApp
             const tg = window.Telegram?.WebApp;
             const user = tg?.initDataUnsafe?.user || null;
 
             if (tg) {
                 tg.expand();
                 tg.ready();
-                tg.disableVerticalSwipes?.();
-                tg.setHeaderColor?.('#ffffff');
-                tg.setBackgroundColor?.('#f2f2f7');
+                tg.backgroundColor = '#ffffff';
+                tg.headerColor = '#ffffff';
+                if (tg.setHeaderColor) tg.setHeaderColor('#ffffff');
             }
 
-            // ========== ДАННЫЕ ==========
-            const DB_KEY = 'okay_glass_db';
-            const STATE_KEY = 'okay_glass_state';
-            const WITHDRAW_KEY = 'okay_withdraw_history';
+            // ===== БАЗА ДАННЫХ =====
+            const DB_KEY = 'okay_users_database_v12';
+            const CURRENT_USER_KEY = 'okay_current_user_v12';
+            const QUESTS_KEY = 'okay_quests_v12';
 
-            // База данных пользователей
-            let database = { users: {}, totalUsers: 0 };
+            // Инициализация базы данных
+            let database = {
+                users: {},
+                totalUsers: 0,
+                totalStars: 0,
+                lastUpdate: new Date().toISOString()
+            };
+
             try {
-                const saved = localStorage.getItem(DB_KEY);
-                if (saved) database = JSON.parse(saved);
-            } catch(e){}
-            if (!database.users) database.users = {};
+                const savedDB = localStorage.getItem(DB_KEY);
+                if (savedDB) {
+                    database = JSON.parse(savedDB) || database;
+                }
+            } catch (e) {
+                console.log('Database load error');
+            }
 
-            // Состояние пользователя
+            // ===== КВЕСТЫ =====
+            const dailyQuests = [
+                {
+                    id: 'daily1',
+                    title: '📺 Подписаться на OKAY',
+                    reward: 1,
+                    link: 'https://t.me/OKAYPROJECT'
+                },
+                {
+                    id: 'daily2',
+                    title: '📺 Подписаться на канал друга',
+                    reward: 1,
+                    link: 'https://t.me/ufc_cuttings'
+                },
+                { id: 'daily3', title: '🔄 Сделать репост', reward: 1 },
+                { id: 'daily4', title: '💬 3 комментария', reward: 1 }
+            ];
+
+            const weeklyQuests = [
+                { id: 'weekly1', title: '🔥 5 дней подряд', reward: 1 },
+                { id: 'weekly2', title: '👥 3 приглашённых друга', reward: 1 },
+                { id: 'weekly3', title: '🎮 10 игр', reward: 1 },
+                { id: 'weekly4', title: '📱 10 репостов', reward: 1 },
+                { id: 'weekly5', title: '🏆 Топ-10 за неделю', reward: 1 }
+            ];
+
+            // Функция получения номера недели (ISO неделя)
+            function getWeekNumber(date) {
+                const d = new Date(date);
+                d.setHours(0, 0, 0, 0);
+                d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+                const yearStart = new Date(d.getFullYear(), 0, 1);
+                return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+            }
+
+            // Состояние квестов
+            let questState = {
+                daily: {},
+                weekly: {},
+                lastDailyReset: new Date().toDateString(),
+                lastWeeklyReset: getWeekNumber(new Date())
+            };
+
+            try {
+                const savedQuests = localStorage.getItem(QUESTS_KEY);
+                if (savedQuests) {
+                    const parsed = JSON.parse(savedQuests);
+                    questState = {
+                        daily: parsed.daily || {},
+                        weekly: parsed.weekly || {},
+                        lastDailyReset: parsed.lastDailyReset || new Date().toDateString(),
+                        lastWeeklyReset: parsed.lastWeeklyReset || getWeekNumber(new Date())
+                    };
+                }
+            } catch (e) {
+                console.log('Quests load error');
+            }
+
+            // Проверка и сброс квестов
+            function checkQuestReset() {
+                const today = new Date().toDateString();
+                const currentWeek = getWeekNumber(new Date());
+                let changed = false;
+
+                if (questState.lastDailyReset !== today) {
+                    questState.daily = {};
+                    questState.lastDailyReset = today;
+                    changed = true;
+                }
+
+                if (questState.lastWeeklyReset !== currentWeek) {
+                    questState.weekly = {};
+                    questState.lastWeeklyReset = currentWeek;
+                    changed = true;
+                }
+
+                if (changed) {
+                    saveQuestState();
+                }
+            }
+
+            function saveQuestState() {
+                try {
+                    localStorage.setItem(QUESTS_KEY, JSON.stringify(questState));
+                } catch (e) {
+                    console.log('Quest save error');
+                }
+            }
+
+            // ===== СОСТОЯНИЕ ПОЛЬЗОВАТЕЛЯ =====
             const defaultState = {
-                stars: 0,
-                premium: false,
+                stars: 0, // Начальный баланс 0
                 dailyQuests: {},
                 weeklyQuests: {},
                 joinDate: new Date().toLocaleDateString('ru-RU'),
-                lastDailyReset: new Date().toDateString(),
-                lastWeeklyReset: getWeekNumber(new Date()),
-                weeklyPremiumGift: null
+                withdrawals: [],
+                lastActive: new Date().toISOString()
             };
 
             let state = { ...defaultState };
+
             try {
-                const saved = localStorage.getItem(STATE_KEY);
-                if (saved) state = { ...defaultState, ...JSON.parse(saved) };
-            } catch(e){}
-            state.stars = state.stars || 0;
+                const savedState = localStorage.getItem(CURRENT_USER_KEY);
+                if (savedState) {
+                    const parsed = JSON.parse(savedState);
+                    state = {
+                        ...defaultState,
+                        ...parsed
+                    };
+                }
+            } catch (e) {
+                console.log('State load error');
+            }
 
-            // История выводов
-            let withdrawHistory = [];
-            try {
-                const saved = localStorage.getItem(WITHDRAW_KEY);
-                if (saved) withdrawHistory = JSON.parse(saved);
-            } catch(e){}
-
-            // Каналы для подписки
-            const CHANNELS = {
-                ok: '@OKAYPROJECT',
-                friend: '@ufc_cuttings'
-            };
-
-            // ========== DOM ЭЛЕМЕНТЫ ==========
-            const el = {
+            // ===== ЭЛЕМЕНТЫ =====
+            const elements = {
                 contentArea: document.getElementById('contentArea'),
                 starBalance: document.getElementById('starBalance'),
+                topBalance: document.getElementById('topBalance'),
                 balanceAmount: document.querySelector('.balance-amount'),
-                avatarPlaceholder: document.getElementById('avatarPlaceholder'),
-                avatarImage: document.getElementById('avatarImage'),
-                userName: document.getElementById('userName'),
-                userUsername: document.getElementById('userUsername'),
-                userBadge: document.getElementById('userBadge'),
-                animations: document.getElementById('animations'),
-                currentTime: document.getElementById('currentTime'),
-                profileHeader: document.getElementById('profileHeader')
+                animationContainer: document.getElementById('animation-container'),
+                currentTime: document.getElementById('currentTime')
             };
 
-            // Навигация
-            const nav = {
+            // ===== НАВИГАЦИЯ =====
+            const navItems = {
                 quests: document.getElementById('navQuests'),
-                profile: document.getElementById('navProfile'),
-                premium: document.getElementById('navPremium'),
-                withdraw: document.getElementById('navWithdraw')
+                withdraw: document.getElementById('navWithdraw'),
+                help: document.getElementById('navHelp')
             };
 
-            // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+            // ===== ФУНКЦИИ =====
 
-            // Обновление времени
             function updateTime() {
-                if (!el.currentTime) return;
+                if (!elements.currentTime) return;
                 const now = new Date();
-                el.currentTime.textContent = now.toLocaleTimeString('ru-RU', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false
-                });
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                elements.currentTime.textContent = `${hours}:${minutes}`;
             }
             updateTime();
             setInterval(updateTime, 1000);
 
-            // Номер недели
-            function getWeekNumber(d) {
-                const date = new Date(d);
-                date.setHours(0,0,0);
-                date.setDate(date.getDate() + 4 - (date.getDay() || 7));
-                const yearStart = new Date(date.getFullYear(), 0, 1);
-                return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
-            }
+            function updateUserInDatabase() {
+                if (!user || !user.id) return;
 
-            // Тактильная обратная связь
-            function vibrate(type = 'light') {
-                if (tg?.HapticFeedback) {
-                    if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
-                    else if (type === 'error') tg.HapticFeedback.notificationOccurred('error');
-                    else tg.HapticFeedback.impactOccurred('light');
+                try {
+                    database.users[user.id] = {
+                        id: user.id,
+                        name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'OKAY User',
+                        username: user.username || `user_${user.id}`,
+                        avatar: user.photo_url || null,
+                        stars: state.stars || 0,
+                        joined: state.joinDate,
+                        lastSeen: new Date().toLocaleDateString('ru-RU'),
+                        questsCompleted: getCompletedQuestsCount()
+                    };
+
+                    database.totalUsers = Object.keys(database.users).length;
+                    database.totalStars = Object.values(database.users).reduce((sum, u) => sum + (u.stars || 0), 0);
+                    database.lastUpdate = new Date().toISOString();
+
+                    localStorage.setItem(DB_KEY, JSON.stringify(database));
+                } catch (e) {
+                    console.log('Database update error');
                 }
             }
 
-            // Анимация звезд
-            function createStars(amount, element) {
-                if (!element || !el.animations || !el.balanceAmount) return;
+            function getCompletedQuestsCount() {
+                const daily = Object.values(state.dailyQuests || {}).filter(v => v).length || 0;
+                const weekly = Object.values(state.weeklyQuests || {}).filter(v => v).length || 0;
+                return daily + weekly;
+            }
+
+            function saveState() {
+                try {
+                    state.lastActive = new Date().toISOString();
+                    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(state));
+                    updateUserInDatabase();
+                } catch (e) {
+                    console.log('State save error');
+                }
+            }
+
+            // Новая анимация звезд
+            function animateStars(amount, sourceElement) {
+                if (!sourceElement || !elements.animationContainer || !elements.topBalance) return;
 
                 try {
-                    const src = element.getBoundingClientRect();
-                    const srcX = src.left + src.width/2;
-                    const srcY = src.top + src.height/2;
+                    const sourceRect = sourceElement.getBoundingClientRect();
+                    const sourceX = sourceRect.left + sourceRect.width / 2;
+                    const sourceY = sourceRect.top + sourceRect.height / 2;
 
-                    const tgt = el.balanceAmount.getBoundingClientRect();
-                    const tgtX = tgt.left + tgt.width/2;
-                    const tgtY = tgt.top + tgt.height/2;
+                    const targetRect = elements.topBalance.getBoundingClientRect();
+                    const targetX = targetRect.left + targetRect.width / 2;
+                    const targetY = targetRect.top + targetRect.height / 2;
 
-                    const dx = tgtX - srcX;
-                    const dy = tgtY - srcY;
+                    const deltaX = targetX - sourceX;
+                    const deltaY = targetY - sourceY;
 
-                    const count = Math.min(8, Math.floor(amount / 2) + 3);
+                    const starCount = Math.min(Math.floor(Math.abs(amount) / 2) + 3, 10);
 
-                    for (let i = 0; i < count; i++) {
+                    for (let i = 0; i < starCount; i++) {
                         setTimeout(() => {
                             const star = document.createElement('div');
                             star.className = 'star-particle';
                             star.innerHTML = '⭐️';
-                            star.style.left = (srcX + (Math.random() - 0.5) * 50) + 'px';
-                            star.style.top = (srcY + (Math.random() - 0.5) * 50) + 'px';
-                            star.style.setProperty('--x', (dx + (Math.random() - 0.5) * 40) + 'px');
-                            star.style.setProperty('--y', (dy + (Math.random() - 0.5) * 40) + 'px');
-                            el.animations.appendChild(star);
-                            setTimeout(() => star.remove(), 1200);
-                        }, i * 40);
+
+                            const randomOffsetX = (Math.random() - 0.5) * 80;
+                            const randomOffsetY = (Math.random() - 0.5) * 80;
+
+                            star.style.left = (sourceX + randomOffsetX) + 'px';
+                            star.style.top = (sourceY + randomOffsetY) + 'px';
+
+                            const x20 = deltaX * 0.2 + (Math.random() - 0.5) * 60;
+                            const y20 = deltaY * 0.2 + (Math.random() - 0.5) * 60 - 60;
+
+                            const x50 = deltaX * 0.5 + (Math.random() - 0.5) * 40;
+                            const y50 = deltaY * 0.5 + (Math.random() - 0.5) * 40 - 40;
+
+                            const x80 = deltaX * 0.8 + (Math.random() - 0.5) * 20;
+                            const y80 = deltaY * 0.8 + (Math.random() - 0.5) * 20 - 20;
+
+                            star.style.setProperty('--x-20', x20 + 'px');
+                            star.style.setProperty('--y-20', y20 + 'px');
+                            star.style.setProperty('--x-50', x50 + 'px');
+                            star.style.setProperty('--y-50', y50 + 'px');
+                            star.style.setProperty('--x-80', x80 + 'px');
+                            star.style.setProperty('--y-80', y80 + 'px');
+                            star.style.setProperty('--x-final', deltaX + 'px');
+                            star.style.setProperty('--y-final', deltaY + 'px');
+
+                            if (elements.animationContainer) {
+                                elements.animationContainer.appendChild(star);
+                            }
+
+                            setTimeout(() => {
+                                if (star.parentNode) star.remove();
+                            }, 800);
+                        }, i * 80);
                     }
 
-                    el.balanceAmount.classList.add('pop');
-                    setTimeout(() => el.balanceAmount.classList.remove('pop'), 300);
-                    vibrate('success');
-                } catch (e) {}
-            }
-
-            // Сохранение данных
-            function saveAll() {
-                try {
-                    localStorage.setItem(STATE_KEY, JSON.stringify(state));
-
-                    if (user?.id) {
-                        database.users[user.id] = {
-                            id: user.id,
-                            name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User',
-                            username: user.username || `user_${user.id}`,
-                            avatar: user.photo_url || null,
-                            stars: state.stars,
-                            premium: state.premium || false,
-                            joinDate: state.joinDate
-                        };
-                        database.totalUsers = Object.keys(database.users).length;
-                        localStorage.setItem(DB_KEY, JSON.stringify(database));
-                    }
-
-                    localStorage.setItem(WITHDRAW_KEY, JSON.stringify(withdrawHistory));
-
-                    if (el.starBalance) el.starBalance.textContent = state.stars;
-                    if (el.userBadge) {
-                        el.userBadge.className = `badge ${state.premium ? 'premium' : ''}`;
-                        el.userBadge.textContent = state.premium ? 'PREMIUM' : 'MEMBER';
-                    }
-                } catch (e) {}
-            }
-
-            // Уведомление
-            function notify(title, message) {
-                vibrate('success');
-                alert(`${title}\n${message}`);
-            }
-
-            // Проверка подписки
-            async function checkSubscription(channel) {
-                if (!user?.id) return false;
-
-                try {
-                    vibrate();
-                    tg?.openTelegramLink(`https://t.me/${channel.replace('@', '')}`);
-
-                    return new Promise((resolve) => {
+                    if (elements.balanceAmount) {
+                        elements.balanceAmount.classList.add('balance-highlight');
                         setTimeout(() => {
-                            if (confirm('Подписались на канал?')) {
-                                resolve(true);
-                            } else {
-                                resolve(false);
+                            if (elements.balanceAmount) {
+                                elements.balanceAmount.classList.remove('balance-highlight');
                             }
-                        }, 1000);
-                    });
+                        }, 500);
+                    }
                 } catch (e) {
-                    return false;
+                    console.log('Animation error');
                 }
             }
 
-            // Покупка Premium за Telegram Stars
-            async function buyPremium() {
-                if (!tg) {
-                    notify('❌ Ошибка', 'Telegram WebApp не доступен');
-                    return;
-                }
-
-                try {
-                    vibrate();
-
-                    const btn = document.getElementById('buyPremiumBtn');
-                    if (btn) {
-                        btn.classList.add('loading');
-                        btn.textContent = '⏳ Обработка...';
-                    }
-
-                    // Эмуляция успешной покупки
-                    setTimeout(() => {
-                        if (state.stars >= 100) {
-                            state.stars -= 100;
-                            state.premium = true;
-                            saveAll();
-
-                            if (btn) {
-                                btn.classList.remove('loading');
-                            }
-
-                            notify('🎉 Premium активирован', 'Добро пожаловать в элитный клуб!');
-                            renderPremium();
-                            vibrate('success');
-                        } else {
-                            notify('❌ Ошибка', 'Недостаточно звёзд');
-                            if (btn) {
-                                btn.classList.remove('loading');
-                                btn.textContent = 'Купить Premium за 100⭐';
-                            }
-                        }
-                    }, 1500);
-
-                } catch (e) {
-                    console.error('Purchase error:', e);
-                    notify('❌ Ошибка', 'Не удалось совершить покупку');
-
-                    const btn = document.getElementById('buyPremiumBtn');
-                    if (btn) {
-                        btn.classList.remove('loading');
-                        btn.textContent = 'Купить Premium за 100⭐';
-                    }
+            function refreshUI() {
+                if (elements.starBalance) {
+                    elements.starBalance.textContent = state.stars || 0;
                 }
             }
 
-            // ========== КВЕСТЫ ==========
-            const dailyQuests = [
-                { id: 'd1', title: 'Подпишись на наш канал', reward: 2, channel: CHANNELS.ok },
-                { id: 'd2', title: 'Подпишись на нашего друга', reward: 2, channel: CHANNELS.friend },
-                { id: 'd3', title: 'Вход в приложение', reward: 1 },
-                { id: 'd4', title: 'Написать комментарий', reward: 1 },
-                { id: 'd5', title: 'Поставить лайк', reward: 1 }
-            ];
+            // Функция открытия ссылки
+            function openQuestLink(link, questId, reward, btnElement) {
+                if (!link) return;
 
-            const weeklyQuests = [
-                { id: 'w1', title: '5 дней подряд', reward: 5 },
-                { id: 'w2', title: '10 квестов', reward: 5 },
-                { id: 'w3', title: '5 репостов', reward: 5 },
-                { id: 'w4', title: 'Топ-10', reward: 10 },
-                { id: 'w5', title: '500 звёзд', reward: 10 }
-            ];
+                // Открываем ссылку
+                window.open(link, '_blank');
 
-            async function completeQuest(btn, qid, type, reward) {
-                const quest = [...dailyQuests, ...weeklyQuests].find(x => x.id === qid);
-
-                if (quest?.channel) {
-                    btn.classList.add('checking');
-                    btn.textContent = '⏳';
-
-                    const subscribed = await checkSubscription(quest.channel);
-
-                    btn.classList.remove('checking');
-
-                    if (!subscribed) {
-                        btn.textContent = '❌';
-                        setTimeout(() => {
-                            btn.textContent = 'Взять';
-                        }, 1500);
+                // Даем небольшую задержку перед выполнением квеста
+                setTimeout(() => {
+                    // Проверяем, не выполнен ли уже квест
+                    const isDaily = questId.startsWith('daily');
+                    if ((isDaily && state.dailyQuests?.[questId]) || (!isDaily && state.weeklyQuests?.[questId])) {
                         return;
                     }
-                }
 
-                btn.textContent = '⏳';
+                    // Выполняем квест
+                    animateStars(reward, btnElement);
 
-                setTimeout(() => {
-                    let finalReward = reward;
-                    if (state.premium) finalReward = reward * 2; // x2 для premium
+                    state.stars = (state.stars || 0) + reward;
 
-                    state.stars += finalReward;
-
-                    if (type === 'daily') {
+                    if (isDaily) {
                         if (!state.dailyQuests) state.dailyQuests = {};
-                        state.dailyQuests[qid] = true;
+                        state.dailyQuests[questId] = true;
                     } else {
                         if (!state.weeklyQuests) state.weeklyQuests = {};
-                        state.weeklyQuests[qid] = true;
+                        state.weeklyQuests[questId] = true;
                     }
 
-                    createStars(finalReward, btn);
-                    notify('✅ +' + finalReward + '⭐', quest?.title || 'Квест выполнен');
-                    saveAll();
-                    renderQuests();
-                }, 400);
+                    refreshUI();
+                    saveState();
+
+                    const questElement = document.getElementById(questId);
+                    if (questElement) {
+                        questElement.classList.add('completed');
+                        const questBtn = questElement.querySelector('.quest-btn');
+                        if (questBtn) {
+                            questBtn.textContent = '✅';
+                            questBtn.classList.add('completed');
+                        }
+                    }
+
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.notificationOccurred('success');
+                    }
+                }, 1000);
             }
 
-            function renderQuests() {
-                const today = new Date().toDateString();
-                if (state.lastDailyReset !== today) {
-                    state.dailyQuests = {};
-                    state.lastDailyReset = today;
-                }
+            // ===== РЕНДЕР СТРАНИЦ =====
 
-                const week = getWeekNumber(new Date());
-                if (state.lastWeeklyReset !== week) {
-                    state.weeklyQuests = {};
-                    state.lastWeeklyReset = week;
-                }
+            function renderQuests() {
+                if (!elements.contentArea) return;
+
+                checkQuestReset();
+
+                const dailyCompleted = Object.values(state.dailyQuests || {}).filter(v => v).length || 0;
+                const weeklyCompleted = Object.values(state.weeklyQuests || {}).filter(v => v).length || 0;
 
                 const now = new Date();
                 const tomorrow = new Date(now);
                 tomorrow.setDate(tomorrow.getDate() + 1);
                 tomorrow.setHours(0, 0, 0, 0);
+                const msUntilMidnight = tomorrow - now;
+                const hoursLeft = Math.floor(msUntilMidnight / (1000 * 60 * 60));
+                const minutesLeft = Math.floor((msUntilMidnight % (1000 * 60 * 60)) / (1000 * 60));
 
-                const left = tomorrow - now;
-                const hours = Math.floor(left / 3600000);
-                const mins = Math.floor((left % 3600000) / 60000);
+                const currentWeek = getWeekNumber(new Date());
 
-                let html = `
-                    <div class="glass-card">
+                let htmlString = `
+                    <div class="content-card">
                         <div class="quests-tabs">
-                            <button class="tab active" id="dailyTab">📅 Дневные</button>
-                            <button class="tab" id="weeklyTab">📆 Недельные</button>
+                            <button class="quest-tab active" id="dailyTab" type="button">📅 Ежедневные</button>
+                            <button class="quest-tab" id="weeklyTab" type="button">📆 Недельные</button>
                         </div>
 
-                        <div id="dailySection">
+                        <div class="quest-section" id="dailySection">
                 `;
 
-                dailyQuests.forEach(q => {
-                    const done = state.dailyQuests?.[q.id];
-                    const rewardMultiplier = state.premium ? ' (x2)' : '';
-                    html += `
-                        <div class="quest-item" data-quest="${q.id}" data-type="daily">
-                            <div>
-                                <div class="quest-info">${q.title}</div>
-                                <div class="quest-reward">⭐️ +${q.reward}${rewardMultiplier}</div>
+                dailyQuests.forEach((quest) => {
+                    const isCompleted = state.dailyQuests?.[quest.id] || false;
+
+                    htmlString += `
+                        <div class="quest-item ${isCompleted ? 'completed' : ''}" id="${quest.id}">
+                            <div class="quest-info" ${quest.link ? `data-link="${quest.link}" data-quest-id="${quest.id}" data-reward="${quest.reward}"` : ''}>
+                                <div class="quest-title ${quest.link ? 'link' : ''}">${quest.title}</div>
+                                <div class="quest-reward">⭐️ +${quest.reward}</div>
                             </div>
-                            <button class="quest-btn ${done ? 'completed' : ''}" ${done ? 'disabled' : ''}>
-                                ${done ? '✅' : 'Взять'}
-                            </button>
+                            <button class="quest-btn ${isCompleted ? 'completed' : ''}" type="button">${isCompleted ? '✅' : 'Взять'}</button>
                         </div>
                     `;
                 });
 
-                html += `
-                        <div class="reset-timer">⏰ ${hours}ч ${mins}м</div>
-                    </div>
+                htmlString += `
+                            <div class="reset-timer">⏰ Сброс через ${hoursLeft}ч ${minutesLeft}м</div>
+                        </div>
 
-                    <div id="weeklySection" class="hidden">
+                        <div class="quest-section hidden" id="weeklySection">
                 `;
 
-                weeklyQuests.forEach(q => {
-                    const done = state.weeklyQuests?.[q.id];
-                    const rewardMultiplier = state.premium ? ' (x2)' : '';
-                    html += `
-                        <div class="quest-item" data-quest="${q.id}" data-type="weekly">
-                            <div>
-                                <div class="quest-info">${q.title}</div>
-                                <div class="quest-reward">⭐️ +${q.reward}${rewardMultiplier}</div>
+                weeklyQuests.forEach((quest) => {
+                    const isCompleted = state.weeklyQuests?.[quest.id] || false;
+                    htmlString += `
+                        <div class="quest-item ${isCompleted ? 'completed' : ''}" id="${quest.id}">
+                            <div class="quest-info">
+                                <div class="quest-title">${quest.title}</div>
+                                <div class="quest-reward">⭐️ +${quest.reward}</div>
                             </div>
-                            <button class="quest-btn ${done ? 'completed' : ''}" ${done ? 'disabled' : ''}>
-                                ${done ? '✅' : 'Взять'}
-                            </button>
+                            <button class="quest-btn ${isCompleted ? 'completed' : ''}" type="button">${isCompleted ? '✅' : 'Взять'}</button>
                         </div>
                     `;
                 });
 
-                html += `
-                        <div class="reset-timer">📆 Неделя ${week}</div>
+                htmlString += `
+                            <div class="reset-timer">📆 Неделя ${currentWeek} · Сброс в понедельник</div>
+                        </div>
+
+                        <div style="margin-top: 16px; padding: 12px; background: white; border-radius: 26px; text-align: center; color: #8e8e93;">
+                            ✅ Выполнено: ${dailyCompleted + weeklyCompleted} / ${dailyQuests.length + weeklyQuests.length}
+                        </div>
                     </div>
-                </div>
                 `;
 
-                el.contentArea.innerHTML = html;
+                elements.contentArea.innerHTML = htmlString;
 
-                document.getElementById('dailyTab').onclick = () => {
-                    document.getElementById('dailyTab').classList.add('active');
-                    document.getElementById('weeklyTab').classList.remove('active');
-                    document.getElementById('dailySection').classList.remove('hidden');
-                    document.getElementById('weeklySection').classList.add('hidden');
-                    vibrate();
-                };
+                const dailyTab = document.getElementById('dailyTab');
+                const weeklyTab = document.getElementById('weeklyTab');
+                const dailySection = document.getElementById('dailySection');
+                const weeklySection = document.getElementById('weeklySection');
 
-                document.getElementById('weeklyTab').onclick = () => {
-                    document.getElementById('weeklyTab').classList.add('active');
-                    document.getElementById('dailyTab').classList.remove('active');
-                    document.getElementById('weeklySection').classList.remove('hidden');
-                    document.getElementById('dailySection').classList.add('hidden');
-                    vibrate();
-                };
+                if (dailyTab && weeklyTab && dailySection && weeklySection) {
+                    dailyTab.onclick = () => {
+                        dailyTab.classList.add('active');
+                        weeklyTab.classList.remove('active');
+                        dailySection.classList.remove('hidden');
+                        weeklySection.classList.add('hidden');
 
-                document.querySelectorAll('.quest-item .quest-btn:not(.completed)').forEach(btn => {
-                    btn.onclick = async (e) => {
-                        e.stopPropagation();
-                        const item = btn.closest('.quest-item');
-                        const qid = item.dataset.quest;
-                        const type = item.dataset.type;
-
-                        if ((type === 'daily' && state.dailyQuests[qid]) ||
-                            (type === 'weekly' && state.weeklyQuests[qid])) return;
-
-                        const quest = [...dailyQuests, ...weeklyQuests].find(x => x.id === qid);
-                        await completeQuest(btn, qid, type, quest?.reward || 1);
+                        if (tg && tg.HapticFeedback) {
+                            tg.HapticFeedback.selectionChanged();
+                        }
                     };
+
+                    weeklyTab.onclick = () => {
+                        weeklyTab.classList.add('active');
+                        dailyTab.classList.remove('active');
+                        weeklySection.classList.remove('hidden');
+                        dailySection.classList.add('hidden');
+
+                        if (tg && tg.HapticFeedback) {
+                            tg.HapticFeedback.selectionChanged();
+                        }
+                    };
+                }
+
+                // Обработчики для квестов с ссылками
+                dailyQuests.forEach(quest => {
+                    const questInfo = document.querySelector(`#${quest.id} .quest-info`);
+                    const btn = document.querySelector(`#${quest.id} .quest-btn`);
+
+                    if (questInfo && quest.link && !state.dailyQuests?.[quest.id]) {
+                        questInfo.onclick = (e) => {
+                            e.preventDefault();
+                            openQuestLink(quest.link, quest.id, quest.reward, btn);
+                        };
+                    }
+
+                    if (btn && !state.dailyQuests?.[quest.id]) {
+                        btn.onclick = () => {
+                            if (quest.link) {
+                                openQuestLink(quest.link, quest.id, quest.reward, btn);
+                            } else {
+                                completeQuest(quest.id, quest.reward, btn);
+                            }
+                        };
+                    }
+                });
+
+                weeklyQuests.forEach(quest => {
+                    const btn = document.querySelector(`#${quest.id} .quest-btn`);
+                    if (btn && !state.weeklyQuests?.[quest.id]) {
+                        btn.onclick = () => completeQuest(quest.id, quest.reward, btn);
+                    }
                 });
             }
 
-            // ========== ПРОФИЛЬ ==========
-            function renderProfile() {
-                const level = Math.floor(state.stars / 500) + 1;
-                const progress = (state.stars % 500) / 500 * 100;
-                const totalQuests = Object.values(state.dailyQuests || {}).filter(v => v).length +
-                                   Object.values(state.weeklyQuests || {}).filter(v => v).length;
+            function completeQuest(questId, reward, btnElement) {
+                if (!questState) return;
 
-                const html = `
-                    <div class="glass-card">
-                        <div style="display:flex; gap:16px; align-items:center; margin-bottom:20px;">
-                            <div class="avatar" style="width:64px; height:64px;">
-                                ${user?.photo_url ?
-                                    `<img src="${user.photo_url}" style="width:100%;height:100%;border-radius:50%;">` :
-                                    '<div class="avatar-placeholder" style="font-size:32px;">👤</div>'}
-                            </div>
-                            <div>
-                                <div style="font-size:20px; font-weight:700; color:#000000; ${document.body.classList.contains('dark-theme') ? 'color:#ffffff;' : ''}">${user?.first_name || 'OKAY'} ${user?.last_name || ''}</div>
-                                <div style="color:#8e8e93; font-size:13px;">@${user?.username || 'user'}</div>
-                                <div style="color:#8e8e93; font-size:11px;">с ${state.joinDate}</div>
-                            </div>
-                        </div>
+                const isDaily = questId.startsWith('daily');
 
-                        <div class="stats-grid">
-                            <div class="stat-item">
-                                <div class="stat-value">${state.stars}</div>
-                                <div class="stat-label">⭐️ Звёзд</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value">${level}</div>
-                                <div class="stat-label">Уровень</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value">${database.totalUsers}</div>
-                                <div class="stat-label">Всего</div>
-                            </div>
-                        </div>
+                if (isDaily && state.dailyQuests?.[questId]) return;
+                if (!isDaily && state.weeklyQuests?.[questId]) return;
 
-                        <div class="progress-container">
-                            <div class="progress-header">
-                                <span>До уровня ${level + 1}</span>
-                                <span>${state.stars % 500}/500</span>
-                            </div>
-                            <div class="progress-bg">
-                                <div class="progress-fill" style="width:${progress}%"></div>
-                            </div>
-                        </div>
+                animateStars(reward, btnElement);
 
-                        <div style="background:rgba(0,0,0,0.02); border-radius:24px; padding:16px; ${document.body.classList.contains('dark-theme') ? 'background:rgba(255,255,255,0.05);' : ''}">
-                            <div style="font-weight:600; margin-bottom:10px; color:#000000; ${document.body.classList.contains('dark-theme') ? 'color:#ffffff;' : ''}">📊 Статистика</div>
-                            <div style="display:flex; justify-content:space-between; color:#8e8e93; font-size:13px; margin-bottom:6px;">
-                                <span>Выполнено квестов:</span>
-                                <span>${totalQuests}</span>
-                            </div>
-                            <div style="display:flex; justify-content:space-between; color:#8e8e93; font-size:13px;">
-                                <span>Премиум статус:</span>
-                                <span>${state.premium ? '✅ Активен (x2)' : '❌ Нет'}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                state.stars = (state.stars || 0) + reward;
 
-                el.contentArea.innerHTML = html;
-            }
+                if (isDaily) {
+                    if (!state.dailyQuests) state.dailyQuests = {};
+                    state.dailyQuests[questId] = true;
+                } else {
+                    if (!state.weeklyQuests) state.weeklyQuests = {};
+                    state.weeklyQuests[questId] = true;
+                }
 
-            // ========== PREMIUM ==========
-            function renderPremium() {
-                if (state.premium) {
-                    const currentWeek = getWeekNumber(new Date());
-                    if (state.weeklyPremiumGift !== currentWeek) {
-                        state.stars += 50;
-                        state.weeklyPremiumGift = currentWeek;
-                        saveAll();
+                refreshUI();
+                saveState();
+
+                const questElement = document.getElementById(questId);
+                if (questElement) {
+                    questElement.classList.add('completed');
+                    const questBtn = questElement.querySelector('.quest-btn');
+                    if (questBtn) {
+                        questBtn.textContent = '✅';
+                        questBtn.classList.add('completed');
                     }
                 }
 
-                const html = `
-                    <div class="glass-card">
-                        <div class="premium-card">
-                            <div class="premium-badge">💎 PREMIUM</div>
-
-                            <div style="font-size:18px; margin:16px 0; color:#000000; ${document.body.classList.contains('dark-theme') ? 'color:#ffffff;' : ''}">
-                                ${state.premium ? 'Статус активен' : 'Эксклюзивные преимущества'}
-                            </div>
-
-                            <div class="premium-feature">
-                                <span>🚀</span>
-                                <span style="flex:1;">Квесты дают x2 награды</span>
-                            </div>
-                            <div class="premium-feature">
-                                <span>💎</span>
-                                <span style="flex:1;">Эксклюзивный значок</span>
-                            </div>
-                            <div class="premium-feature">
-                                <span>🎁</span>
-                                <span style="flex:1;">50⭐ каждую неделю</span>
-                            </div>
-
-                            ${!state.premium ? `
-                                <div class="premium-price">100 ⭐️</div>
-                                <button class="premium-btn" id="buyPremiumBtn">
-                                    Купить Premium за 100⭐
-                                </button>
-                                <p style="color:#8e8e93; font-size:11px; margin-top:12px;">
-                                    Оплата реальными Telegram Stars
-                                </p>
-                            ` : `
-                                <div style="background:rgba(0,0,0,0.02); border-radius:24px; padding:16px; margin-top:16px; ${document.body.classList.contains('dark-theme') ? 'background:rgba(255,255,255,0.05);' : ''}">
-                                    <div style="font-size:16px; margin-bottom:8px; color:#000000; ${document.body.classList.contains('dark-theme') ? 'color:#ffffff;' : ''}">✅ Premium активен</div>
-                                    <div style="color:#8e8e93; font-size:12px;">
-                                        Недельный бонус: ${state.weeklyPremiumGift === getWeekNumber(new Date()) ? 'получен' : 'ожидает'}
-                                    </div>
-                                </div>
-                            `}
-                        </div>
-                    </div>
-                `;
-
-                el.contentArea.innerHTML = html;
-
-                if (!state.premium) {
-                    document.getElementById('buyPremiumBtn').onclick = buyPremium;
+                if (tg && tg.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred('success');
                 }
             }
 
-            // ========== ВЫВОД ==========
             function renderWithdraw() {
-                const minWithdraw = 50;
-                const canWithdraw = state.stars >= minWithdraw;
+                if (!elements.contentArea) return;
 
-                const html = `
-                    <div class="glass-card">
-                        <div class="withdraw-card">
-                            <h3 style="font-size:20px; margin-bottom:8px; color:#000000; ${document.body.classList.contains('dark-theme') ? 'color:#ffffff;' : ''}">💸 Вывод средств</h3>
+                const minWithdraw = 25;
+                const canWithdraw = (state.stars || 0) >= minWithdraw;
 
-                            <div class="withdraw-amount">
-                                ${state.stars} ⭐️
-                            </div>
+                let withdrawalsHtml = '';
+                if (state.withdrawals && state.withdrawals.length > 0) {
+                    withdrawalsHtml = state.withdrawals.slice(-3).reverse().map(w =>
+                        `<div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 8px; background: white; border-radius: 20px;">
+                            <span>💰 ${w.amount || 0} ⭐️</span>
+                            <span style="color: #8e8e93;">${w.date || ''}</span>
+                        </div>`
+                    ).join('');
+                } else {
+                    withdrawalsHtml = '<div style="color: #8e8e93; text-align: center; padding: 16px;">Пока нет выводов</div>';
+                }
 
-                            <div class="withdraw-min">
-                                Мин. сумма: ${minWithdraw} ⭐️
-                            </div>
-
-                            <input type="number" id="withdrawAmount" class="withdraw-input"
-                                   placeholder="Сумма" min="${minWithdraw}" max="${state.stars}"
-                                   value="${Math.min(minWithdraw, state.stars)}">
-
-                            <button class="withdraw-btn" id="withdrawBtn" ${!canWithdraw ? 'disabled' : ''}>
-                                ${canWithdraw ? 'Вывести' : 'Недостаточно звёзд'}
+                const htmlString = `
+                    <div class="content-card">
+                        <div class="balance-container">
+                            <div style="color: #8e8e93; font-size: 16px;">Текущий баланс</div>
+                            <div class="balance-big">${state.stars || 0} <span>⭐️</span></div>
+                            <button class="withdraw-btn" ${!canWithdraw ? 'disabled' : ''} type="button">
+                                ${canWithdraw ? '💰 Вывести все звезды' : `Нужно ещё ${minWithdraw - (state.stars || 0)} ⭐️`}
                             </button>
-
-                            <div style="margin-top:24px;">
-                                <h4 style="font-size:16px; margin-bottom:12px; text-align:left; color:#000000; ${document.body.classList.contains('dark-theme') ? 'color:#ffffff;' : ''}">📜 История</h4>
-                                ${withdrawHistory.slice(0, 5).map(h => `
-                                    <div class="history-item">
-                                        <span>${h.date}</span>
-                                        <span>${h.amount}⭐️</span>
-                                        <span style="color:${h.status === 'выполнен' ? '#34c759' : '#ffcc00'}">${h.status}</span>
-                                    </div>
-                                `).join('')}
-                                ${withdrawHistory.length === 0 ?
-                                    '<div style="color:#8e8e93; padding:16px; text-align:center;">Нет операций</div>' : ''}
+                            <div class="min-withdraw">Минимальный вывод: ${minWithdraw} ⭐️</div>
+                            <div style="margin-top: 24px;">
+                                <div style="font-weight: 600; margin-bottom: 12px; text-align: left;">📊 История выводов</div>
+                                ${withdrawalsHtml}
                             </div>
                         </div>
                     </div>
                 `;
 
-                el.contentArea.innerHTML = html;
+                elements.contentArea.innerHTML = htmlString;
 
-                document.getElementById('withdrawBtn')?.addEventListener('click', () => {
-                    const amount = parseInt(document.getElementById('withdrawAmount').value);
+                const withdrawBtn = document.querySelector('.withdraw-btn');
+                if (withdrawBtn && canWithdraw) {
+                    withdrawBtn.onclick = withdraw;
+                }
+            }
 
-                    if (amount < minWithdraw) {
-                        notify('❌ Ошибка', `Минимум ${minWithdraw}⭐️`);
-                        return;
+            function withdraw() {
+                const minWithdraw = 25;
+                const currentStars = state.stars || 0;
+
+                if (currentStars < minWithdraw) {
+                    alert(`❌ Нужно минимум ${minWithdraw} ⭐️`);
+                    return;
+                }
+
+                const amount = currentStars;
+
+                if (confirm(`Вывести ${amount} ⭐️?\n\nСредства поступят в течение 24 часов.`)) {
+                    animateStars(-amount, document.querySelector('.withdraw-btn'));
+
+                    state.stars = 0;
+
+                    if (!state.withdrawals) state.withdrawals = [];
+                    state.withdrawals.push({
+                        amount: amount,
+                        date: new Date().toLocaleDateString('ru-RU')
+                    });
+
+                    refreshUI();
+                    saveState();
+                    renderWithdraw();
+
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.notificationOccurred('success');
                     }
+                    alert(`✅ Заявка на вывод ${amount} ⭐️ создана!`);
+                }
+            }
 
-                    if (amount > state.stars) {
-                        notify('❌ Ошибка', 'Недостаточно звёзд');
-                        return;
-                    }
+            function renderHelp() {
+                if (!elements.contentArea) return;
 
-                    if (confirm(`Вывести ${amount}⭐️?`)) {
-                        state.stars -= amount;
+                const htmlString = `
+                    <div class="content-card">
+                        <div style="text-align: center; padding: 24px 16px;">
+                            <div style="font-size: 80px; margin-bottom: 20px; animation: float 3s ease-in-out infinite;">❓</div>
+                            <div style="font-size: 24px; font-weight: 700; color: #1c1c1e; margin-bottom: 12px;">Нужна помощь?</div>
+                            <div style="color: #8e8e93; font-size: 16px; margin-bottom: 32px; line-height: 1.5;">Свяжитесь с нашим менеджером — он ответит на все вопросы</div>
+                            <div style="background: white; border-radius: 30px; padding: 24px; margin: 20px 0; border: 1px solid rgba(0, 0, 0, 0.02);">
+                                <div style="width: 80px; height: 80px; background: #1c1c1e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 40px; color: white;">👨‍💼</div>
+                                <div style="font-size: 20px; font-weight: 700; color: #1c1c1e; margin-bottom: 4px;">Менеджер OKAY</div>
+                                <div style="color: #8e8e93; font-size: 15px; margin-bottom: 20px;">@OKAYPROJECTMANAGER</div>
+                                <button class="withdraw-btn" id="contactManagerBtn" type="button" style="margin: 0;">
+                                    <span>📱</span> Написать менеджеру
+                                </button>
+                            </div>
+                            <div style="margin-top: 24px; padding: 16px; background: #f8f8fa; border-radius: 26px;">
+                                <div style="display: flex; align-items: center; gap: 12px; color: #8e8e93; font-size: 14px;">
+                                    <span>⏰</span>
+                                    <span>Обычно отвечаем в течение 5-10 минут</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
 
-                        withdrawHistory.unshift({
-                            date: new Date().toLocaleDateString(),
-                            amount: amount,
-                            status: 'в обработке'
-                        });
+                elements.contentArea.innerHTML = htmlString;
 
-                        if (withdrawHistory.length > 20) withdrawHistory.pop();
+                const contactBtn = document.getElementById('contactManagerBtn');
+                if (contactBtn) {
+                    contactBtn.onclick = () => {
+                        window.open('https://t.me/OKAYPROJECTMANAGER', '_blank');
+                        if (tg && tg.HapticFeedback) {
+                            tg.HapticFeedback.selectionChanged();
+                        }
+                    };
+                }
+            }
 
-                        saveAll();
-                        notify('✅ Заявка создана', `Вывод ${amount}⭐️ обрабатывается`);
-                        renderWithdraw();
-                        vibrate('success');
-                    }
+            // ===== НАВИГАЦИЯ =====
+            function setActiveNav(activeId) {
+                Object.values(navItems).forEach(item => {
+                    if (item) item.classList.remove('active');
                 });
-            }
-
-            // ========== НАВИГАЦИЯ ==========
-            function setActive(activeId) {
-                Object.values(nav).forEach(b => b?.classList.remove('active'));
-                nav[activeId]?.classList.add('active');
-                vibrate();
-
-                switch(activeId) {
-                    case 'quests': renderQuests(); break;
-                    case 'profile': renderProfile(); break;
-                    case 'premium': renderPremium(); break;
-                    case 'withdraw': renderWithdraw(); break;
+                if (navItems[activeId]) {
+                    navItems[activeId].classList.add('active');
                 }
             }
 
-            nav.quests.onclick = () => setActive('quests');
-            nav.profile.onclick = () => setActive('profile');
-            nav.premium.onclick = () => setActive('premium');
-            nav.withdraw.onclick = () => setActive('withdraw');
-            el.profileHeader.onclick = () => setActive('profile');
-
-            // ========== ИНИЦИАЛИЗАЦИЯ ==========
-            function init() {
-                // Обновление информации пользователя
-                if (user) {
-                    el.userName.textContent = `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'OKAY User';
-                    el.userUsername.textContent = user.username ? '@' + user.username : '@user';
-
-                    if (user.photo_url) {
-                        el.avatarImage.src = user.photo_url;
-                        el.avatarImage.style.display = 'block';
-                        el.avatarPlaceholder.style.display = 'none';
+            if (navItems.quests) {
+                navItems.quests.onclick = () => {
+                    setActiveNav('quests');
+                    renderQuests();
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.selectionChanged();
                     }
-                }
-
-                // Применение темы Telegram
-                document.body.className = tg?.colorScheme === 'dark' ? 'dark-theme' : 'light-theme';
-
-                // Обновление бейджа
-                el.userBadge.className = `badge ${state.premium ? 'premium' : ''}`;
-                el.userBadge.textContent = state.premium ? 'PREMIUM' : 'MEMBER';
-
-                // Баланс
-                el.starBalance.textContent = state.stars;
-
-                // Стартовый рендер
-                renderQuests();
-                saveAll();
+                };
+            }
+            if (navItems.withdraw) {
+                navItems.withdraw.onclick = () => {
+                    setActiveNav('withdraw');
+                    renderWithdraw();
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.selectionChanged();
+                    }
+                };
+            }
+            if (navItems.help) {
+                navItems.help.onclick = () => {
+                    setActiveNav('help');
+                    renderHelp();
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.selectionChanged();
+                    }
+                };
             }
 
-            init();
+            // ===== ИНИЦИАЛИЗАЦИЯ =====
+            refreshUI();
+            renderQuests();
 
-            // Автообновление квестов
-            setInterval(() => {
-                const today = new Date().toDateString();
-                if (state.lastDailyReset !== today) {
-                    notify('📅 Квесты обновлены', 'Новые задания!');
-                    if (nav.quests.classList.contains('active')) renderQuests();
-                }
-            }, 60000);
+            if (user && user.id) {
+                updateUserInDatabase();
+            }
+
+            // Проверка сброса квестов каждую минуту
+            setInterval(checkQuestReset, 60000);
         })();
     </script>
 </body>
