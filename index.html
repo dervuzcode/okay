@@ -38,14 +38,8 @@
             padding: 16px 14px 20px;
             padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
             position: relative;
-            animation: frameAppear 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
             display: flex;
             flex-direction: column;
-        }
-
-        @keyframes frameAppear {
-            0% { opacity: 0; transform: scale(0.98); }
-            100% { opacity: 1; transform: scale(1); }
         }
 
         #animation-container {
@@ -66,12 +60,6 @@
             color: #8e8e93;
             font-size: 15px;
             font-weight: 500;
-            animation: fadeSlide 0.5s ease forwards;
-        }
-
-        @keyframes fadeSlide {
-            0% { opacity: 0; transform: translateY(-10px); }
-            100% { opacity: 1; transform: translateY(0); }
         }
 
         .okay-badge {
@@ -84,13 +72,12 @@
             font-size: 14px;
             font-weight: 600;
             color: #1c1c1e;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+            transition: background-color 0.2s ease;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
 
         .okay-badge:active {
-            transform: scale(0.95) translateY(2px);
             background: #e8e8ed;
         }
 
@@ -115,20 +102,13 @@
             border-radius: 30px;
             margin-bottom: 16px;
             border: 1px solid rgba(0, 0, 0, 0.02);
-            animation: slideScale 0.5s ease-out forwards;
             transform: translateZ(0);
             will-change: transform;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+            transition: background-color 0.2s ease;
         }
 
         .top-balance:active {
-            transform: scale(0.98) translateY(2px);
             background: rgba(240, 240, 245, 0.9);
-        }
-
-        @keyframes slideScale {
-            0% { opacity: 0; transform: translateY(-15px) scale(0.95); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .balance-label {
@@ -151,7 +131,7 @@
             font-size: 22px;
             color: #1c1c1e;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+            transition: background-color 0.2s ease;
             transform: translateZ(0);
             will-change: transform, background;
         }
@@ -159,11 +139,6 @@
         .balance-amount span:last-child {
             font-size: 20px;
             margin-left: 2px;
-            transition: transform 0.3s ease;
-        }
-
-        .balance-amount:hover span:last-child {
-            transform: rotate(10deg) scale(1.1);
         }
 
         .star-particle {
@@ -238,15 +213,9 @@
             border-radius: 30px;
             padding: 18px 14px;
             border: 1px solid rgba(0, 0, 0, 0.02);
-            animation: cardScale 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
             margin-bottom: 16px;
             transform: translateZ(0);
             will-change: transform, opacity;
-        }
-
-        @keyframes cardScale {
-            from { opacity: 0; transform: scale(0.95) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .quests-tabs {
@@ -265,7 +234,7 @@
             font-size: 15px;
             color: #8e8e93;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+            transition: all 0.2s ease;
             text-align: center;
             transform: translateZ(0);
             will-change: transform, background, color;
@@ -274,26 +243,18 @@
         .quest-tab.active {
             background: #1c1c1e;
             color: white;
-            transform: scale(1.02) translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .quest-tab:active {
-            transform: scale(0.96) translateY(2px);
+            background: #e8e8ed;
         }
 
         .quest-section {
             display: block;
-            animation: sectionSlide 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
         }
 
         .quest-section.hidden {
             display: none;
-        }
-
-        @keyframes sectionSlide {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
         }
 
         .quest-item {
@@ -305,31 +266,19 @@
             border-radius: 26px;
             margin-bottom: 10px;
             border: 1px solid rgba(0, 0, 0, 0.02);
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
-            animation: questPop 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+            transition: background-color 0.2s ease;
             transform: translateZ(0);
             will-change: transform, opacity;
         }
 
-        .quest-item:nth-child(2) { animation-delay: 0.05s; }
-        .quest-item:nth-child(3) { animation-delay: 0.1s; }
-        .quest-item:nth-child(4) { animation-delay: 0.15s; }
-
         .quest-item:active {
-            transform: scale(0.97) translateY(2px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-        }
-
-        @keyframes questPop {
-            from { opacity: 0; transform: scale(0.9) translateX(-10px); }
-            to { opacity: 1; transform: scale(1) translateX(0); }
+            background: #f8f8fa;
         }
 
         .quest-item.completed {
             opacity: 0.6;
             background: #f2f2f7;
             pointer-events: none;
-            transform: scale(0.98);
         }
 
         .quest-info {
@@ -346,12 +295,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            transition: color 0.2s ease;
-        }
-
-        .quest-title.link:hover {
-            color: #0066cc;
-            text-decoration: underline;
         }
 
         .quest-reward {
@@ -372,7 +315,7 @@
             border-radius: 30px;
             font-size: 13px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
+            transition: background-color 0.2s ease;
             cursor: pointer;
             flex-shrink: 0;
             transform: translateZ(0);
@@ -380,7 +323,6 @@
         }
 
         .quest-btn:active {
-            transform: scale(0.9) translateY(2px);
             background: #f8f8fa;
         }
 
@@ -398,12 +340,6 @@
             border-radius: 26px;
             color: #8e8e93;
             font-size: 13px;
-            animation: softPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes softPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(0.99); }
         }
 
         .balance-container {
@@ -419,47 +355,35 @@
             font-weight: 700;
             color: #1c1c1e;
             margin: 16px 0;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
         }
 
         .balance-big span {
             font-size: 40px;
             margin-left: 8px;
             display: inline-block;
-            animation: rotate 4s ease-in-out infinite;
-        }
-
-        @keyframes rotate {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(5deg); }
-            75% { transform: rotate(-5deg); }
         }
 
         .withdraw-btn {
             background: #1c1c1e;
             color: white;
             border: none;
-            padding: 18px 32px;
+            padding: 16px 28px;
             border-radius: 40px;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            width: 100%;
+            width: auto;
+            min-width: 200px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
-            margin: 16px 0;
+            transition: background-color 0.2s ease;
+            margin: 16px auto;
             transform: translateZ(0);
             will-change: transform, box-shadow;
             box-shadow: 0 4px 15px rgba(28, 28, 30, 0.1);
+            display: inline-block;
         }
 
         .withdraw-btn:active {
-            transform: scale(0.96) translateY(3px);
-            box-shadow: 0 2px 8px rgba(28, 28, 30, 0.1);
+            background: #2c2c2e;
         }
 
         .withdraw-btn:disabled {
@@ -467,7 +391,6 @@
             color: #8e8e93;
             pointer-events: none;
             opacity: 0.7;
-            transform: scale(0.98);
         }
 
         .min-withdraw {
@@ -487,18 +410,12 @@
             -webkit-backdrop-filter: blur(10px);
             border-radius: 40px;
             border: 1px solid rgba(0, 0, 0, 0.02);
-            animation: navSlide 0.5s ease-out 0.2s forwards;
             gap: 2px;
             position: sticky;
             bottom: 10px;
             flex-wrap: wrap;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
             margin-bottom: env(safe-area-inset-bottom);
-        }
-
-        @keyframes navSlide {
-            from { opacity: 0; transform: translateY(30px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .nav-item {
@@ -509,7 +426,7 @@
             padding: 8px 0;
             border-radius: 30px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+            transition: background-color 0.2s ease;
             color: #8e8e93;
             font-size: 10px;
             font-weight: 500;
@@ -522,23 +439,17 @@
         }
 
         .nav-item:active {
-            transform: scale(0.92) translateY(2px);
+            background: #e8e8ed;
         }
 
         .nav-item.active {
             color: #1c1c1e;
             background: white;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-            transform: scale(1.05) translateY(-2px);
         }
 
         .nav-item span:first-child {
             font-size: 20px;
-            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
-        }
-
-        .nav-item.active span:first-child {
-            transform: translateY(-3px) scale(1.1);
         }
 
         .nav-item span:last-child {
@@ -553,6 +464,90 @@
 
         .hidden {
             display: none !important;
+        }
+
+        .help-container {
+            text-align: center;
+            padding: 24px 16px;
+        }
+
+        .help-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .help-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin-bottom: 12px;
+        }
+
+        .help-description {
+            color: #8e8e93;
+            font-size: 16px;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .manager-card {
+            background: white;
+            border-radius: 30px;
+            padding: 24px;
+            margin: 20px 0;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02);
+        }
+
+        .manager-avatar {
+            width: 80px;
+            height: 80px;
+            background: #1c1c1e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 40px;
+            color: white;
+        }
+
+        .manager-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin-bottom: 4px;
+        }
+
+        .manager-username {
+            color: #8e8e93;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        .contact-btn {
+            background: #1c1c1e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 15px;
+            font-weight: 600;
+            width: auto;
+            min-width: 180px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transform: translateZ(0);
+            will-change: transform;
+            margin: 0 auto;
+        }
+
+        .contact-btn:active {
+            background: #2c2c2e;
         }
 
         @supports (padding: max(0px)) {
@@ -632,9 +627,9 @@
             }
 
             // ===== БАЗА ДАННЫХ =====
-            const DB_KEY = 'okay_users_database_v12';
-            const CURRENT_USER_KEY = 'okay_current_user_v12';
-            const QUESTS_KEY = 'okay_quests_v12';
+            const DB_KEY = 'okay_users_database_v13';
+            const CURRENT_USER_KEY = 'okay_current_user_v13';
+            const QUESTS_KEY = 'okay_quests_v13';
 
             // Инициализация базы данных
             let database = {
@@ -744,7 +739,7 @@
 
             // ===== СОСТОЯНИЕ ПОЛЬЗОВАТЕЛЯ =====
             const defaultState = {
-                stars: 0, // Начальный баланс 0
+                stars: 0,
                 dailyQuests: {},
                 weeklyQuests: {},
                 joinDate: new Date().toLocaleDateString('ru-RU'),
@@ -837,7 +832,6 @@
                 }
             }
 
-            // Новая анимация звезд
             function animateStars(amount, sourceElement) {
                 if (!sourceElement || !elements.animationContainer || !elements.topBalance) return;
 
@@ -914,22 +908,17 @@
                 }
             }
 
-            // Функция открытия ссылки
             function openQuestLink(link, questId, reward, btnElement) {
                 if (!link) return;
 
-                // Открываем ссылку
                 window.open(link, '_blank');
 
-                // Даем небольшую задержку перед выполнением квеста
                 setTimeout(() => {
-                    // Проверяем, не выполнен ли уже квест
                     const isDaily = questId.startsWith('daily');
                     if ((isDaily && state.dailyQuests?.[questId]) || (!isDaily && state.weeklyQuests?.[questId])) {
                         return;
                     }
 
-                    // Выполняем квест
                     animateStars(reward, btnElement);
 
                     state.stars = (state.stars || 0) + reward;
@@ -960,8 +949,6 @@
                     }
                 }, 1000);
             }
-
-            // ===== РЕНДЕР СТРАНИЦ =====
 
             function renderQuests() {
                 if (!elements.contentArea) return;
@@ -997,7 +984,7 @@
                     htmlString += `
                         <div class="quest-item ${isCompleted ? 'completed' : ''}" id="${quest.id}">
                             <div class="quest-info" ${quest.link ? `data-link="${quest.link}" data-quest-id="${quest.id}" data-reward="${quest.reward}"` : ''}>
-                                <div class="quest-title ${quest.link ? 'link' : ''}">${quest.title}</div>
+                                <div class="quest-title">${quest.title}</div>
                                 <div class="quest-reward">⭐️ +${quest.reward}</div>
                             </div>
                             <button class="quest-btn ${isCompleted ? 'completed' : ''}" type="button">${isCompleted ? '✅' : 'Взять'}</button>
@@ -1066,7 +1053,6 @@
                     };
                 }
 
-                // Обработчики для квестов с ссылками
                 dailyQuests.forEach(quest => {
                     const questInfo = document.querySelector(`#${quest.id} .quest-info`);
                     const btn = document.querySelector(`#${quest.id} .quest-btn`);
@@ -1158,9 +1144,11 @@
                         <div class="balance-container">
                             <div style="color: #8e8e93; font-size: 16px;">Текущий баланс</div>
                             <div class="balance-big">${state.stars || 0} <span>⭐️</span></div>
-                            <button class="withdraw-btn" ${!canWithdraw ? 'disabled' : ''} type="button">
-                                ${canWithdraw ? '💰 Вывести все звезды' : `Нужно ещё ${minWithdraw - (state.stars || 0)} ⭐️`}
-                            </button>
+                            <div style="text-align: center;">
+                                <button class="withdraw-btn" ${!canWithdraw ? 'disabled' : ''} type="button">
+                                    ${canWithdraw ? '💰 Вывести все звезды' : `Нужно ещё ${minWithdraw - (state.stars || 0)} ⭐️`}
+                                </button>
+                            </div>
                             <div class="min-withdraw">Минимальный вывод: ${minWithdraw} ⭐️</div>
                             <div style="margin-top: 24px;">
                                 <div style="font-weight: 600; margin-bottom: 12px; text-align: left;">📊 История выводов</div>
@@ -1216,17 +1204,19 @@
 
                 const htmlString = `
                     <div class="content-card">
-                        <div style="text-align: center; padding: 24px 16px;">
-                            <div style="font-size: 80px; margin-bottom: 20px; animation: float 3s ease-in-out infinite;">❓</div>
-                            <div style="font-size: 24px; font-weight: 700; color: #1c1c1e; margin-bottom: 12px;">Нужна помощь?</div>
-                            <div style="color: #8e8e93; font-size: 16px; margin-bottom: 32px; line-height: 1.5;">Свяжитесь с нашим менеджером — он ответит на все вопросы</div>
-                            <div style="background: white; border-radius: 30px; padding: 24px; margin: 20px 0; border: 1px solid rgba(0, 0, 0, 0.02);">
-                                <div style="width: 80px; height: 80px; background: #1c1c1e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 40px; color: white;">👨‍💼</div>
-                                <div style="font-size: 20px; font-weight: 700; color: #1c1c1e; margin-bottom: 4px;">Менеджер OKAY</div>
-                                <div style="color: #8e8e93; font-size: 15px; margin-bottom: 20px;">@OKAYPROJECTMANAGER</div>
-                                <button class="withdraw-btn" id="contactManagerBtn" type="button" style="margin: 0;">
-                                    <span>📱</span> Написать менеджеру
-                                </button>
+                        <div class="help-container">
+                            <div class="help-icon">❓</div>
+                            <div class="help-title">Нужна помощь?</div>
+                            <div class="help-description">Свяжитесь с нашим менеджером — он ответит на все вопросы</div>
+                            <div class="manager-card">
+                                <div class="manager-avatar">👨‍💼</div>
+                                <div class="manager-name">Менеджер OKAY</div>
+                                <div class="manager-username">@OKAYPROJECTMANAGER</div>
+                                <div style="text-align: center;">
+                                    <button class="contact-btn" id="contactManagerBtn" type="button">
+                                        <span>📱</span> Написать менеджеру
+                                    </button>
+                                </div>
                             </div>
                             <div style="margin-top: 24px; padding: 16px; background: #f8f8fa; border-radius: 26px;">
                                 <div style="display: flex; align-items: center; gap: 12px; color: #8e8e93; font-size: 14px;">
@@ -1251,7 +1241,6 @@
                 }
             }
 
-            // ===== НАВИГАЦИЯ =====
             function setActiveNav(activeId) {
                 Object.values(navItems).forEach(item => {
                     if (item) item.classList.remove('active');
@@ -1289,7 +1278,6 @@
                 };
             }
 
-            // ===== ИНИЦИАЛИЗАЦИЯ =====
             refreshUI();
             renderQuests();
 
@@ -1297,7 +1285,6 @@
                 updateUserInDatabase();
             }
 
-            // Проверка сброса квестов каждую минуту
             setInterval(checkQuestReset, 60000);
         })();
     </script>
